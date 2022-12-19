@@ -39,7 +39,6 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
     contentController.text = widget.model.content; /// To TextField Equal Data from DataBase
 
 
-    print(widget.model.date.substring(0,16));
     if(widget.model.checkTitleDirection == 0) {
       /// to Change TextField Direction for Title
       ref.read(provUpdateTitleDirection).boolean = true;
