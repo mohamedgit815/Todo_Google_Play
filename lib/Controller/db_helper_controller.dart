@@ -14,7 +14,12 @@ class DBHelperController {
     _db = await openDatabase( "todo.db" ,
         version: 1 ,
         onCreate: (Database db , int v) {
-      db.execute("create table todo(id integer primary key autoincrement, title varchar(100), content varchar(1024), date varchar(100))");
+      db.execute(""
+          "create table todo(id integer primary key autoincrement,"
+          " title varchar(100), content varchar(1024),"
+          " date varchar(100),"
+          " checkTitleDirection integer ,"
+          " checkContentDirection integer)");
     });
 
     return _db;

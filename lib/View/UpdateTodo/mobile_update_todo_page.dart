@@ -1,68 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
 import 'package:todo_app/Controller/global_controller.dart';
 import 'package:todo_app/Controller/home_todo_controller.dart';
 import 'package:todo_app/Controller/update_todo_controller.dart';
 import 'package:todo_app/Core/GlobalWidget/global_alert_dialog.dart';
+import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:todo_app/Core/Utils/custom_widgets.dart';
 import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/Model/todo_model.dart';
 
 
-class MobileUpdateTodoPage extends StatefulWidget {
+class MobileUpdateTodoPage extends ConsumerStatefulWidget {
   final BoxConstraints constraints;
-  final String title , content , dateTime;
   final int id;
+  final TodoModel model;
   const MobileUpdateTodoPage({
     Key? key ,
     required this.id ,
+    required this.model ,
     required this.constraints ,
-    required this.title ,
-    required this.content ,
-    required this.dateTime
   }) : super(key: key);
 
   @override
-  State<MobileUpdateTodoPage> createState() => _MobileUpdateTodoPageState();
+  ConsumerState<MobileUpdateTodoPage> createState() => _MobileUpdateTodoPageState();
 }
 
-class _MobileUpdateTodoPageState extends State<MobileUpdateTodoPage>
+class _MobileUpdateTodoPageState extends ConsumerState<MobileUpdateTodoPage>
 with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
-    HomeTodoController , RestorationMixin {
+    HomeTodoController  {
 
 
   @override
   void initState() {
     super.initState();
     dbHelperController = DBHelperController();
+    titleController.text = widget.model.title; /// To TextField Equal Data from DataBase
+    contentController.text = widget.model.content; /// To TextField Equal Data from DataBase
+
+
+    print(widget.model.date.substring(0,16));
+    if(widget.model.checkTitleDirection == 0) {
+      /// to Change TextField Direction for Title
+      ref.read(provUpdateTitleDirection).boolean = true;
+    } else {
+      ref.read(provUpdateTitleDirection).boolean = false;
+    }
+
+
+    if(widget.model.checkContentDirection == 0) {
+      /// to Change TextField Direction for Content
+      ref.read(provUpdateContentDirection).boolean = true;
+    } else {
+      ref.read(provUpdateContentDirection).boolean = false;
+    }
+
 
     // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
     //   titleController.value.text = widget.title;
     //   contentController.value.text = widget.content;
     // });
 
-    Future.delayed(Duration.zero , () {
-      titleController.value.text = widget.title;
-      contentController.value.text = widget.content;
-    });
+    //Future.delayed(Duration.zero , () {
+    //   titleController.text = widget.todoModel.title;
+    //   contentController.text = widget.todoModel.content;
+    //});
   }
 
   @override
   void dispose() {
     super.dispose();
-    titleController.value.dispose();
-    contentController.value.dispose();
-  }
-
-
-  @override
-  // TODO: implement restorationId
-  String? get restorationId => App.constance.updateTodoRestoration;
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(titleController , App.constance.updateTitleRestorationId);
-    registerForRestoration(contentController , App.constance.updateContentRestorationId);
+    titleController.dispose();
+    contentController.dispose();
   }
 
 
@@ -72,7 +81,7 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
       key: ValueKey<int>(widget.id) ,
       onWillPop: () async {
         if(
-        titleController.value.text.isEmpty && contentController.value.text.isEmpty
+        titleController.text.isEmpty && contentController.text.isEmpty
         ) {
          /// AlertDialog for WillPopScope
           return await showDialog(
@@ -96,9 +105,9 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                   )
           );
         } else if (
-        titleController.value.text.length != widget.title.length
+        titleController.text.length != widget.model.title.length
         || /// To Check TextField is empty or no
-        contentController.value.text.length != widget.content.length
+        contentController.text.length != widget.model.content.length
         ) {
           /// AlertDialog for WillPopScope
           return await showDialog(
@@ -113,10 +122,13 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                   onPressForYes: () async {
                       /// updateTodoController used if TextField is not Empty path is: UpdateController
                       return await updateTodoController(
-                          context: context ,
-                          id: widget.id ,
-                          title: titleController.value.text ,
-                          content: contentController.value.text
+                        context: context ,
+                        id: widget.id ,
+                        title: titleController.text ,
+                        content: contentController.text,
+                        checkTitleDirection: ref.read(provUpdateTitleDirection).boolean ? 0 : 1 ,
+                        checkContentDirection: ref.read(provUpdateContentDirection).boolean ? 0 : 1 ,
+
                       );
                   }
               )
@@ -141,7 +153,7 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
               onPress: () async {
 
                 /// i Do that to check TextField Empty or No
-                if(titleController.value.text.isEmpty && contentController.value.text.isEmpty) {
+                if(titleController.text.isEmpty && contentController.text.isEmpty) {
                   return await showDialog(
                       context: context ,
                       builder: (context)=> GlobalAlertDialog(
@@ -161,9 +173,9 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                   ));
                 } else {
                   if(
-                  widget.title == titleController.value.text
+                  widget.model.title == titleController.text
                       &&
-                  widget.content == contentController.value.text
+                  widget.model.content == contentController.text
                   ) {
                     return await backOneScreen(context);
                   } else {
@@ -171,8 +183,10 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                     return await updateTodoController(
                         context: context ,
                         id: widget.id ,
-                        title: titleController.value.text ,
-                        content: contentController.value.text
+                        title: titleController.text ,
+                        content: contentController.text ,
+                        checkTitleDirection: ref.read(provUpdateTitleDirection).boolean ? 0 : 1 ,
+                        checkContentDirection: ref.read(provUpdateContentDirection).boolean ? 0 : 1
                     );
                   }
                 }
@@ -180,7 +194,11 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
           ) ,
 
           /// _MobileCreateTodoWidgets for AppBar
-          appBar: _appBar(key: widget.id ,) ,
+          appBar: _appBar(
+              key: widget.id ,
+              providerListenable: provUpdateContentDirection ,
+            model: widget.model
+          ) ,
 
 
           body: Column(
@@ -188,7 +206,9 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
 
               /// _MobileCreateTodoWidgets for _titleTextField
               _titleTextField(
-                  titleController: titleController.value /// CreateTodoController
+                  model: widget.model ,
+                  providerListenable: provUpdateTitleDirection ,
+                  titleController: titleController /// CreateTodoController
               ) ,
 
 
@@ -196,7 +216,9 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
               Expanded(
                   key: ValueKey<int>(widget.id) ,
                   child: _contentTextField(
-                      contentController: contentController.value /// CreateTodoController
+                    model: widget.model ,
+                      providerListenable: provUpdateContentDirection ,
+                      contentController: contentController /// CreateTodoController
                   )
               ) ,
 
@@ -214,17 +236,49 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
 class _MobileCrateTodoWidgets {
 
   /// Appbar
-  AppBar _appBar({required int key}) {
+  AppBar _appBar({
+    required int key , required TodoModel model ,
+    required ProviderListenable<ProviderState> providerListenable
+  }) {
+    //App.constance.appbarUpdateScreen
     return AppBar(
       key: ValueKey<int>(key),
-      title: CustomText(text: App.constance.appbarUpdateScreen , fontSize: 20.0) ,
+      title: CustomText(text: model.date.substring(0,19) , fontSize: 20.0) ,
       centerTitle: true ,
+      actions: [
+        Consumer(
+            builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
+                child: App.conditional(
+                  condition: prov.watch(providerListenable).boolean ,
+                  builder: (BuildContext buildContext){
+                    return InkWell(
+                        onTap: () {
+                          /// To Change Direction for TextField
+                          prov.read(providerListenable).switchBoolean();
+                        } ,
+                        child: const Text("RTL"));
+                  } ,
+                  fallback: (BuildContext buildContext){
+                    return InkWell(
+                        onTap: () {
+                          /// To Change Direction for TextField
+                          prov.read(providerListenable).switchBoolean();
+                        },
+                        child: const Text("LTR"));
+                  } ,
+                ),
+              );
+            }
+        )
+      ],
     );
   }
 
 
   /// Floating Action Button
-    _floatingActionButton({required VoidCallback onPress ,required int key}) {
+  _floatingActionButton({required VoidCallback onPress ,required int key}) {
     return App.globalFloatingActionButton(
         key: ValueKey<int>(key) ,
         onPress: onPress ,
@@ -234,23 +288,43 @@ class _MobileCrateTodoWidgets {
 
 
   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
-  _titleTextField({required TextEditingController titleController}) {
-    return App.globalTextField(
-        hintText: "Title" ,
-        maxLine: 1 ,
-        textInputAction: TextInputAction.next ,
-        controller: titleController ,
+  Consumer _titleTextField({
+    required TextEditingController titleController ,
+    required TodoModel model ,
+    required ProviderListenable<ProviderState> providerListenable
+  }) {
+    return Consumer(
+      builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+        return App.globalTextField(
+            hintText: "Title" ,
+            maxLine: 1 ,
+            textInputAction: TextInputAction.next ,
+            controller: titleController ,
+            suffixIcon: IconButton(onPressed: (){
+              prov.read(providerListenable).switchBoolean();
+            }, icon: Icon(Icons.cached , color: App.color.darkMainColor,)),
+            textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
+        );
+      }
     );
   }
 
 
   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
-  _contentTextField({required TextEditingController contentController}) {
-    return App.globalTextField(
-        hintText: "Content" ,
-        maxLine: 999999999 ,
-        textInputAction: TextInputAction.unspecified ,
-        controller: contentController
+  Consumer _contentTextField({
+    required TextEditingController contentController , required TodoModel model ,
+    required ProviderListenable<ProviderState> providerListenable
+  }) {
+    return Consumer(
+      builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+        return App.globalTextField(
+            hintText: "Content" ,
+            maxLine: 999999999 ,
+            textInputAction: TextInputAction.unspecified ,
+            controller: contentController ,
+            textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
+        );
+      }
     );
   }
 

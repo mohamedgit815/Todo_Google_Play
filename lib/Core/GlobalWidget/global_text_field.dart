@@ -8,11 +8,15 @@ class GlobalTextField extends StatelessWidget {
   final TextInputAction textInputAction;
   final TextEditingController controller;
   final ValueChanged<String>? onChange , onSubmitted;
+  final TextDirection? textDirection;
+  final Widget? suffixIcon;
 
   const GlobalTextField({
     Key? key ,
     this.onChange ,
     this.onSubmitted ,
+    this.textDirection ,
+    this.suffixIcon ,
     required this.controller ,
     required this.hintText ,
     required this.maxLine ,
@@ -31,11 +35,13 @@ class GlobalTextField extends StatelessWidget {
       autofocus: false ,
       autocorrect: true ,
       obscureText: false ,
+      textDirection: textDirection ?? TextDirection.ltr,
       //maxLength: 100 ,
       maxLines: maxLine ,
       cursorColor: App.color.cursorColor ,
       decoration: InputDecoration(
           hintText: hintText ,
+        suffixIcon: suffixIcon
       ) ,
     );
   }

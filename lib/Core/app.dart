@@ -1,3 +1,4 @@
+import 'package:animated_conditional_builder/animated_conditional_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/Core/GlobalWidget/global_alert_dialog.dart';
 import 'package:todo_app/Core/GlobalWidget/global_floating_action_button.dart';
@@ -41,6 +42,8 @@ class App {
     required TextEditingController controller ,
     ValueChanged<String>? onChange ,
     ValueChanged<String>? onSubmitted ,
+    TextDirection? textDirection ,
+    Widget? suffixIcon
   }) {
     return GlobalTextField(
       hintText: hintText ,
@@ -49,6 +52,8 @@ class App {
       controller: controller ,
       onChange: onChange ,
       onSubmitted: onSubmitted ,
+      suffixIcon: suffixIcon ,
+      textDirection: textDirection
     );
   }
 
@@ -60,16 +65,16 @@ class App {
   }
 
   /// Package AnimatedConditionalBuilder
-// static AnimatedConditionalBuilder conditional({
-//     required bool condition ,
-//     required WidgetBuilder builder ,
-//     required WidgetBuilder? fallback
-//   }) {
-//     return AnimatedConditionalBuilder(
-//         condition: condition,
-//         builder: builder,
-//         fallback: fallback
-//     );
-//   }
+  static AnimatedConditionalBuilder conditional({
+      required bool condition ,
+      required WidgetBuilder builder ,
+      required WidgetBuilder? fallback
+    }) {
+      return AnimatedConditionalBuilder(
+          condition: condition,
+          builder: builder,
+          fallback: fallback
+      );
+    }
 
 }

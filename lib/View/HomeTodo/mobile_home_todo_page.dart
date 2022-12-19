@@ -5,6 +5,7 @@ import 'package:todo_app/Controller/global_controller.dart';
 import 'package:todo_app/Controller/home_todo_controller.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:todo_app/Core/Utils/custom_widgets.dart';
+import 'package:todo_app/Core/Utils/route_builder.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
@@ -99,8 +100,8 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                                 //     RouteGenerators.nextPage,
                                 //     arguments: [id , model.content] );
                                 //App.navigator.pushNamedRouter(route: RouteGenerators.updateTodoScreen, context: context,arguments: [model ,id]);
-                                navigateToUpdateTodoScreen(context: context, arguments: [id , model.title , model.content , model.date]);
-                                //await Navigator.of(context).pushNamed(RouteGenerators.updateTodoScreen , arguments: [model ,id]);
+                                //navigateToUpdateTodoScreen(context: context, arguments: [id , model]);
+                                await Navigator.of(context).pushNamed(RouteGenerators.updateTodoScreen , arguments: [id , model]);
                               },
                             );
                           });
