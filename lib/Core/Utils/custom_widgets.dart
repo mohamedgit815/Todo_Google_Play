@@ -1,66 +1,117 @@
 import 'package:flutter/material.dart';
 
-
-ScaffoldMessengerState customSnackBar({
-  required String text,
-  required BuildContext context ,
-  final BorderRadius? borderRadius ,
-  final EdgeInsets? padding ,
-  final Duration? duration ,
-  final SnackBarAction? snackBarAction
-}) {
-  return ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(
-      SnackBar(
-          content: CustomText(text: text),
-          shape: RoundedRectangleBorder(borderRadius: borderRadius ?? BorderRadius.circular(0.0)),
-          padding: padding ,
-          duration: duration ?? const Duration(seconds: 1) ,
-          action: snackBarAction
-      ));
+/// Extension For BuildContext
+extension MainContext on BuildContext {
+//  AppLocalization? get translate => AppLocalization.of(this);
+  ThemeData get theme => Theme.of(this);
+  ModalRoute<Object?>? get modal => ModalRoute.of(this);
+  bool get keyBoard => MediaQuery.of(this).viewInsets.bottom == 0;
+  Size get mainSize => MediaQuery.of(this).size;
+  double get height => MediaQuery.of(this).size.height;
+  double get width => MediaQuery.of(this).size.width;
 }
 
-
-Future<void> customAlertDialog({
-  required VoidCallback onPressed ,
-  required BuildContext context
-}){
-  return showDialog(context: context, builder: (buildContext)=>AlertDialog(
-    title: const CustomText(text: 'Sure'),
-    //title: CustomText(text: '${context.translate!.translate(MainEnum.textSure.name)}'),
-    actions: [
-      CustomElevatedButton(
-          onPressed: (){
-            Navigator.pop(context);
-          }, child: const Text('No')),
-      //child: Text('${context.translate!.translate(MainEnum.textNo.name)}')),
-      CustomElevatedButton(
-          onPressed: onPressed, child: const Text('Yes')),
-    ],
-  ));
-}
-
-
-Future<void> customModalBottomSheet({
-  required Widget widgets ,
-  required BuildContext context
-}) async {
-  return await showModalBottomSheet(context: context, builder: (buildContext)=>widgets);
-}
+class CustomWidgets {
+  ScaffoldMessengerState customSnackBar({
+    required String text,
+    required BuildContext context ,
+    final BorderRadius? borderRadius ,
+    final EdgeInsets? padding ,
+    final Duration? duration ,
+    final SnackBarAction? snackBarAction
+  }) {
+    return ScaffoldMessenger.of(context)..removeCurrentSnackBar()..showSnackBar(
+        SnackBar(
+            content: CustomText(text: text),
+            shape: RoundedRectangleBorder(borderRadius: borderRadius ?? BorderRadius.circular(0.0)),
+            padding: padding ,
+            duration: duration ?? const Duration(seconds: 1) ,
+            action: snackBarAction
+        ));
+  }
 
 
-ScaffoldMessengerState customMaterialBanner({
-  required BuildContext context ,
-  required String text ,
-  required List<Widget> actions ,
-  Widget? leading
-}) {
-  return ScaffoldMessenger.of(context)
-    ..hideCurrentMaterialBanner()
-    ..showMaterialBanner(MaterialBanner(
-        leading: leading ,
-        content: Text(text) ,
-        actions: actions
+  Future<void> customAlertDialog({
+    required VoidCallback onPressed ,
+    required BuildContext context
+  }){
+    return showDialog(context: context, builder: (buildContext)=>AlertDialog(
+      title: const CustomText(text: 'Sure'),
+      //title: CustomText(text: '${context.translate!.translate(MainEnum.textSure.name)}'),
+      actions: [
+        CustomElevatedButton(
+            onPressed: (){
+              Navigator.pop(context);
+            }, child: const Text('No')),
+        //child: Text('${context.translate!.translate(MainEnum.textNo.name)}')),
+        CustomElevatedButton(
+            onPressed: onPressed, child: const Text('Yes')),
+      ],
     ));
+  }
+
+
+  Future<void> customModalBottomSheet({
+    required Widget widgets ,
+    required BuildContext context
+  }) async {
+    return await showModalBottomSheet(context: context, builder: (buildContext)=>widgets);
+  }
+
+
+  ScaffoldMessengerState customMaterialBanner({
+    required BuildContext context ,
+    required String text ,
+    required List<Widget> actions ,
+    Widget? leading
+  }) {
+    return ScaffoldMessenger.of(context)
+      ..hideCurrentMaterialBanner()
+      ..showMaterialBanner(MaterialBanner(
+          leading: leading ,
+          content: Text(text) ,
+          actions: actions
+      ));
+  }
+
+}
+
+/// Animated Conditional
+class AnimatedConditional extends StatelessWidget {
+  final Widget first , second;
+  final bool state;
+  final Alignment? alignment;
+  final Duration? duration , reverseDuration;
+  final Curve? firstCurve , secondCurve , sizeCurve;
+
+  const AnimatedConditional({
+    Key? key ,
+    required this.state ,
+    required this.first ,
+    required this.second ,
+    this.duration ,
+    this.reverseDuration ,
+    this.alignment ,
+    this.sizeCurve ,
+    this.firstCurve ,
+    this.secondCurve
+
+  }) : super(key: key);
+
+  @override
+  AnimatedCrossFade build(BuildContext context) {
+    return AnimatedCrossFade(
+      firstChild: first ,
+      secondChild: second ,
+      crossFadeState: state ? CrossFadeState.showFirst : CrossFadeState.showSecond ,
+      secondCurve: secondCurve ?? Curves.linear ,
+      sizeCurve: sizeCurve ?? Curves.linear ,
+      firstCurve: firstCurve ?? Curves.linear,
+      duration: duration ?? const Duration(milliseconds: 300),
+      reverseDuration: reverseDuration ?? duration ,
+      alignment: alignment ?? Alignment.topCenter ,
+    );
+  }
 }
 
 
@@ -106,7 +157,6 @@ class CustomText extends StatelessWidget {
     );
   }
 }
-
 
 
 class AnimatedText extends StatelessWidget {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Controller/create_todo_controller.dart';
+import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Controller/global_controller.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:todo_app/Core/Utils/custom_widgets.dart';
 import 'package:todo_app/Core/app.dart';
@@ -10,41 +9,26 @@ import 'package:todo_app/Core/app.dart';
 
 class MobileCreateTodoPage extends ConsumerStatefulWidget {
   final BoxConstraints constraints;
-  const MobileCreateTodoPage({Key? key , required this.constraints}) : super(key: key);
+  final TextEditingController titleController , contentController;
+  final DBHelperController dbHelperController;
+  final ProviderListenable<ProviderState> provTitleDirection , provContentDirection;
+
+  const MobileCreateTodoPage({
+    Key? key ,
+    required this.constraints ,
+    required this.titleController ,
+    required this.contentController ,
+    required this.dbHelperController ,
+    required this.provTitleDirection ,
+    required this.provContentDirection
+  }) : super(key: key);
 
   @override
   ConsumerState<MobileCreateTodoPage> createState() => _MobileCreateTodoPageState();
 }
 
 class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage>
-with _MobileCrateTodoWidgets , GlobalController
-, CreateTodoController , RestorationMixin {
-
-  @override
-  void initState() {
-    super.initState();
-    dbHelperController = DBHelperController();
-  }
-
-
-  @override
-  void dispose() {
-    super.dispose();
-    titleController.dispose();
-    contentController.dispose();
-  }
-
-  @override
-  // TODO: implement restorationId
-  String? get restorationId => App.constance.createTodoRestoration;
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(titleController, App.constance.createTitleRestorationId);
-    registerForRestoration(contentController, App.constance.createContentRestorationId);
-  }
-
-
+with _MobileCrateTodoWidgets {
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +36,21 @@ with _MobileCrateTodoWidgets , GlobalController
       onWillPop: () async {
 
         /// To Check Controller is empty or no
-        if(titleController.value.text.isNotEmpty || contentController.value.text.isNotEmpty) {
+        if(widget.titleController.text.isNotEmpty || widget.contentController.text.isNotEmpty) {
          /// AlertDialog for WillPopScope
          return await showDialog(context: context , builder: (BuildContext buildContext) {
            return App.globalAlertDialog(
                title: App.constance.saveDialog ,
                onPressForNo: ()  {
-                 navigatorHomeScreen(context);
+                 Controller.navigator.navigatorHomeScreen(context);
                } ,
                onPressForYes: () async {
-                 await createTodo(
+                 await Controller.todo.createTodo(
                    context: context ,
-                   title: titleController.value.text ,
-                   content: contentController.value.text ,
-                   checkTitleDirection: ref.read(provTitleDirection).boolean ? 0 : 1 ,
-                   checkContentDirection: ref.read(provContentDirection).boolean ? 0 : 1 ,
+                   title: widget.titleController.text ,
+                   content: widget.contentController.text ,
+                   checkTitleDirection: ref.read(widget.provTitleDirection).boolean ? 0 : 1 ,
+                   checkContentDirection: ref.read(widget.provContentDirection).boolean ? 0 : 1 ,
                  );
                }
            );
@@ -79,25 +63,25 @@ with _MobileCrateTodoWidgets , GlobalController
       child: GestureDetector(
         onTap: () {
           /// GlobalController : To Hide Keyboard
-          return unFocusKeyBoard(context);
+          return Controller.global.unFocusKeyBoard(context);
         } ,
         child: Scaffold(
 
           /// _MobileCreateTodoWidgets for FloatingActionButton
           floatingActionButton: _floatingActionButton(
               onPress: () async {
-                 await createTodo(
+                 await Controller.todo.createTodo(
                   context: context ,
-                  title: titleController.value.text ,
-                  content: contentController.value.text ,
-                   checkTitleDirection: ref.read(provTitleDirection).boolean ? 0 : 1 ,
-                   checkContentDirection: ref.read(provContentDirection).boolean ? 0 : 1 ,
+                  title: widget.titleController.text ,
+                  content: widget.contentController.text ,
+                   checkTitleDirection: ref.read(widget.provTitleDirection).boolean ? 0 : 1 ,
+                   checkContentDirection: ref.read(widget.provContentDirection).boolean ? 0 : 1 ,
                  );
               }
           ) ,
 
           /// _MobileCreateTodoWidgets for AppBar
-          appBar: _appBar(providerListenable: provContentDirection) ,
+          appBar: _appBar(providerListenable: widget.provContentDirection) ,
 
 
           body: Column(
@@ -105,16 +89,16 @@ with _MobileCrateTodoWidgets , GlobalController
 
               /// _MobileCreateTodoWidgets for _titleTextField
               _titleTextField( /// CreateTodoController
-                  providerListenable: provTitleDirection ,
-                  titleController: titleController.value
+                  providerListenable: widget.provTitleDirection ,
+                  titleController: widget.titleController
               ) ,
 
 
               /// _MobileCreateTodoWidgets for _contentTextField
               Expanded(
                   child: _contentTextField( /// CreateTodoController
-                      contentController: contentController.value,
-                      providerListenable: provContentDirection
+                      contentController: widget.contentController,
+                      providerListenable: widget.provContentDirection
                   )
               ) ,
 
@@ -143,23 +127,36 @@ class _MobileCrateTodoWidgets {
           builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
-              child: App.conditional(
-                  condition: prov.watch(providerListenable).boolean ,
-                  builder: (BuildContext buildContext){
-                    return InkWell(
-                        onTap: () {
-                          prov.read(providerListenable).switchBoolean();
-                        } ,
-                        child: const Text("RTL"));
-                  } ,
-                  fallback: (BuildContext buildContext){
-                    return InkWell(
-                        onTap: () {
-                          prov.read(providerListenable).switchBoolean();
-                        },
-                        child: const Text("LTR"));
-                  } ,
-              ),
+              child: AnimatedConditional(
+                  state: prov.watch(providerListenable).boolean  ,
+                  first: InkWell(
+                      onTap: () {
+                        prov.read(providerListenable).switchBoolean();
+                      },
+                      child: const Text("RTL")) ,
+                  second: InkWell(
+                      onTap: () {
+                        prov.read(providerListenable).switchBoolean();
+                      },
+                      child: const Text("LTR"))
+              )
+              // child: AnimatedCrossFade(
+              //     condition: prov.watch(providerListenable).boolean ,
+              //     builder: (BuildContext buildContext){
+              //       return InkWell(
+              //           onTap: () {
+              //             prov.read(providerListenable).switchBoolean();
+              //           } ,
+              //           child: const Text("RTL"));
+              //     } ,
+              //     fallback: (BuildContext buildContext){
+              //       return InkWell(
+              //           onTap: () {
+              //             prov.read(providerListenable).switchBoolean();
+              //           },
+              //           child: const Text("LTR"));
+              //     } ,
+              // ),
             );
           }
         )

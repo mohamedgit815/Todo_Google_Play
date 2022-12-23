@@ -7,10 +7,11 @@ class ResponsiveBuilderScreen extends StatelessWidget {
   final Widget? deskTop;
   const ResponsiveBuilderScreen({Key? key,required this.mobile,this.tablet,this.deskTop}) : super(key: key);
 
+
   @override
-  Widget build(BuildContext context) {
+  ResponsiveBuilder build(BuildContext context) {
     return ResponsiveBuilder(
-        builder: (BuildContext context,size){
+        builder: (BuildContext context , SizingInformation size) {
           if(size.deviceScreenType == DeviceScreenType.desktop){
             return deskTop ?? mobile;
           } else if(size.deviceScreenType == DeviceScreenType.tablet){

@@ -16,6 +16,8 @@ class MyApp extends StatelessWidget {
 
       restorationScopeId: 'root' ,
 
+      navigatorKey: App.navigator.navigatorKey ,
+
       onGenerateRoute: RouteGenerators.onGenerate ,
 
       themeMode: ThemeMode.dark ,

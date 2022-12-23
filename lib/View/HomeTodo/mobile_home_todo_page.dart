@@ -1,33 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Controller/global_controller.dart';
-import 'package:todo_app/Controller/home_todo_controller.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:todo_app/Core/Utils/custom_widgets.dart';
-import 'package:todo_app/Core/Utils/route_builder.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
 
 
+
 class MobileHomeTodoPage extends ConsumerStatefulWidget {
   final BoxConstraints constraints;
-  const MobileHomeTodoPage({Key? key , required this.constraints}) : super(key: key);
+  final DBHelperController dbHelperController;
+  final ProviderListenable<ProviderState> notificationProv;
+
+  const MobileHomeTodoPage({
+    Key? key ,
+    required this.constraints ,
+    required this.dbHelperController ,
+    required this.notificationProv
+  }) : super(key: key);
 
   @override
   ConsumerState<MobileHomeTodoPage> createState() => _MobileHomeTodoPageState();
 }
 
 class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
-    with _MobileHomeTodoWidgets  , HomeTodoController,
-        DBHelperController , GlobalController {
-
-  @override
-  void initState() {
-    super.initState();
-    dbHelperController = DBHelperController();
-  }
+    with _MobileHomeTodoWidgets {
 
 
   @override
@@ -35,14 +35,17 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
     return NotificationListener<UserScrollNotification>(
       onNotification: (UserScrollNotification notification) {
         /// HomeTodoController notificationListener
-        return notificationListener(notification: notification, ref: ref , providerListenable: notificationProv);
+        return Controller.global.notificationListener(
+            notification: notification, ref: ref ,
+            providerListenable: widget.notificationProv
+        );
       },
       child: Scaffold(
         floatingActionButton: _mobileFloatingActionButton(
-          providerListenable: notificationProv ,
+          providerListenable: widget.notificationProv ,
           onPress: () async {
             /// HomeTodoController navigateToCreateTodoScreen
-             navigateToCreateTodoScreen(context);
+             Controller.navigator.navigateToCreateTodoScreen(context);
           }
         ),
 
@@ -55,7 +58,7 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
 
             /// To Show User Data Builder
             body: FutureBuilder(
-                future: fetchAllTodo() ,
+                future: widget.dbHelperController.fetchAllTodo() ,
                 builder: (BuildContext buildContext , AsyncSnapshot<List<Map<String,dynamic>>> snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting){
                     return const Center(child: CircularProgressIndicator.adaptive());
@@ -84,13 +87,13 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                                    builder: (BuildContext b)=>App.globalAlertDialog(
                                        title: App.constance.sureDialog,
                                        onPressForNo: () {
-                                         backOneScreen(context);
+                                         Controller.navigator.backOneScreen(context);
                                        },
                                        onPressForYes: (){
                                          setState(() {
-                                           deleteItem(id: id , context: context);
+                                           Controller.todo.deleteItem(id: id , context: context);
                                          });
-                                         backOneScreen(context);
+                                         Controller.navigator.backOneScreen(context);
                                        }
                                    ));
 
@@ -100,8 +103,9 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                                 //     RouteGenerators.nextPage,
                                 //     arguments: [id , model.content] );
                                 //App.navigator.pushNamedRouter(route: RouteGenerators.updateTodoScreen, context: context,arguments: [model ,id]);
-                                //navigateToUpdateTodoScreen(context: context, arguments: [id , model]);
-                                await Navigator.of(context).pushNamed(RouteGenerators.updateTodoScreen , arguments: [id , model]);
+                                Controller.navigator.navigateToUpdateTodoScreen(context: context,
+                                    arguments: [id , model.title,model.content,model.date,model.checkTitleDirection,model.checkContentDirection ]);
+                                //await Navigator.of(context).pushNamed(RouteGenerators.updateTodoScreen , arguments: [id , model]);
                               },
                             );
                           });

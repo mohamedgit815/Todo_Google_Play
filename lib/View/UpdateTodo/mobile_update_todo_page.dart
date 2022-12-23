@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Controller/global_controller.dart';
-import 'package:todo_app/Controller/home_todo_controller.dart';
-import 'package:todo_app/Controller/update_todo_controller.dart';
 import 'package:todo_app/Core/GlobalWidget/global_alert_dialog.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:todo_app/Core/Utils/custom_widgets.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
-
 class MobileUpdateTodoPage extends ConsumerStatefulWidget {
   final BoxConstraints constraints;
   final int id;
   final TodoModel model;
+  final ProviderListenable<ProviderState> provUpdateTitleDirection , provUpdateContentDirection;
+  final TextEditingController titleController , contentController;
+  final DBHelperController dbHelperController;
+
   const MobileUpdateTodoPage({
     Key? key ,
     required this.id ,
     required this.model ,
     required this.constraints ,
+    required this.titleController ,
+    required this.contentController ,
+    required this.dbHelperController ,
+    required this.provUpdateTitleDirection ,
+    required this.provUpdateContentDirection
   }) : super(key: key);
 
   @override
@@ -27,51 +33,10 @@ class MobileUpdateTodoPage extends ConsumerStatefulWidget {
 }
 
 class _MobileUpdateTodoPageState extends ConsumerState<MobileUpdateTodoPage>
-with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
-    HomeTodoController  {
+with _MobileCrateTodoWidgets  {
 
 
-  @override
-  void initState() {
-    super.initState();
-    dbHelperController = DBHelperController();
-    titleController.text = widget.model.title; /// To TextField Equal Data from DataBase
-    contentController.text = widget.model.content; /// To TextField Equal Data from DataBase
 
-
-    if(widget.model.checkTitleDirection == 0) {
-      /// to Change TextField Direction for Title
-      ref.read(provUpdateTitleDirection).boolean = true;
-    } else {
-      ref.read(provUpdateTitleDirection).boolean = false;
-    }
-
-
-    if(widget.model.checkContentDirection == 0) {
-      /// to Change TextField Direction for Content
-      ref.read(provUpdateContentDirection).boolean = true;
-    } else {
-      ref.read(provUpdateContentDirection).boolean = false;
-    }
-
-
-    // SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-    //   titleController.value.text = widget.title;
-    //   contentController.value.text = widget.content;
-    // });
-
-    //Future.delayed(Duration.zero , () {
-    //   titleController.text = widget.todoModel.title;
-    //   contentController.text = widget.todoModel.content;
-    //});
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    titleController.dispose();
-    contentController.dispose();
-  }
 
 
   @override
@@ -80,7 +45,7 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
       key: ValueKey<int>(widget.id) ,
       onWillPop: () async {
         if(
-        titleController.text.isEmpty && contentController.text.isEmpty
+        widget.titleController.text.isEmpty && widget.contentController.text.isEmpty
         ) {
          /// AlertDialog for WillPopScope
           return await showDialog(
@@ -89,24 +54,24 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                 title: App.constance.deleteDialog ,
                   onPressForNo: () {
                     /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                      navigatorHomeScreen(context);
+                    Controller.navigator.navigatorHomeScreen(context);
                   } ,
 
                   onPressForYes: () async {
                    /// deleteItem used if TextField is Empty  path is: HomeController
                       //return await deleteItem(id: widget.id)
-                      return await deleteItem(id: widget.id , context: context)
+                      return await Controller.todo.deleteItem(id: widget.id , context: context)
                           .then((value) async {
                         /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                         navigatorHomeScreen(context);
+                        Controller.navigator.navigatorHomeScreen(context);
                       });
                   }
                   )
           );
         } else if (
-        titleController.text.length != widget.model.title.length
+        widget.titleController.text.length != widget.model.title.length
         || /// To Check TextField is empty or no
-        contentController.text.length != widget.model.content.length
+            widget.contentController.text.length != widget.model.content.length
         ) {
           /// AlertDialog for WillPopScope
           return await showDialog(
@@ -115,18 +80,18 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                   title: App.constance.saveDialog ,
                   onPressForNo: () async {
                     /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                     navigatorHomeScreen(context);
+                    Controller.navigator.navigatorHomeScreen(context);
                   } ,
 
                   onPressForYes: () async {
                       /// updateTodoController used if TextField is not Empty path is: UpdateController
-                      return await updateTodoController(
+                      return await Controller.todo.updateTodoController(
                         context: context ,
                         id: widget.id ,
-                        title: titleController.text ,
-                        content: contentController.text,
-                        checkTitleDirection: ref.read(provUpdateTitleDirection).boolean ? 0 : 1 ,
-                        checkContentDirection: ref.read(provUpdateContentDirection).boolean ? 0 : 1 ,
+                        title: widget.titleController.text ,
+                        content: widget.contentController.text,
+                        checkTitleDirection: ref.read(widget.provUpdateTitleDirection).boolean ? 0 : 1 ,
+                        checkContentDirection: ref.read(widget.provUpdateContentDirection).boolean ? 0 : 1 ,
 
                       );
                   }
@@ -142,7 +107,7 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
         key: ValueKey<int>(widget.id) ,
         onTap: () {
           /// GlobalController : To Hide Keyboard
-          return unFocusKeyBoard(context);
+          return Controller.global.unFocusKeyBoard(context);
         } ,
         child: Scaffold(
           key: ValueKey<int>(widget.id) ,
@@ -152,40 +117,40 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
               onPress: () async {
 
                 /// i Do that to check TextField Empty or No
-                if(titleController.text.isEmpty && contentController.text.isEmpty) {
+                if(widget.titleController.text.isEmpty && widget.contentController.text.isEmpty) {
                   return await showDialog(
                       context: context ,
                       builder: (context)=> GlobalAlertDialog(
                         title: App.constance.deleteDialog,
                       onPressForNo: () async {
-                          return await backOneScreen(context);
+                          return await Controller.navigator.backOneScreen(context);
                       },
                       onPressForYes: () async {
                         /// deleteItem used if TextField is Empty  path is: HomeController
                         //return await deleteItem(id: widget.id )
-                        return await deleteItem(id: widget.id , context: context)
+                        return await Controller.todo.deleteItem(id: widget.id , context: context)
                             .then((value) async {
                           /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                           navigatorHomeScreen(context);
+                          Controller.navigator.navigatorHomeScreen(context);
                         });
                       }
                   ));
                 } else {
                   if(
-                  widget.model.title == titleController.text
+                  widget.model.title == widget.titleController.text
                       &&
-                  widget.model.content == contentController.text
+                  widget.model.content == widget.contentController.text
                   ) {
-                    return await backOneScreen(context);
+                    return await Controller.navigator.backOneScreen(context);
                   } else {
                     /// updateTodoController used if TextField is not Empty path is: UpdateController
-                    return await updateTodoController(
+                    return await Controller.todo.updateTodoController(
                         context: context ,
                         id: widget.id ,
-                        title: titleController.text ,
-                        content: contentController.text ,
-                        checkTitleDirection: ref.read(provUpdateTitleDirection).boolean ? 0 : 1 ,
-                        checkContentDirection: ref.read(provUpdateContentDirection).boolean ? 0 : 1
+                        title: widget.titleController.text ,
+                        content: widget.contentController.text ,
+                        checkTitleDirection: ref.read(widget.provUpdateTitleDirection).boolean ? 0 : 1 ,
+                        checkContentDirection: ref.read(widget.provUpdateContentDirection).boolean ? 0 : 1
                     );
                   }
                 }
@@ -195,7 +160,7 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
           /// _MobileCreateTodoWidgets for AppBar
           appBar: _appBar(
               key: widget.id ,
-              providerListenable: provUpdateContentDirection ,
+              providerListenable: widget.provUpdateContentDirection ,
             model: widget.model
           ) ,
 
@@ -206,8 +171,8 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
               /// _MobileCreateTodoWidgets for _titleTextField
               _titleTextField(
                   model: widget.model ,
-                  providerListenable: provUpdateTitleDirection ,
-                  titleController: titleController /// CreateTodoController
+                  providerListenable: widget.provUpdateTitleDirection ,
+                  titleController: widget.titleController /// CreateTodoController
               ) ,
 
 
@@ -216,8 +181,8 @@ with _MobileCrateTodoWidgets , GlobalController , UpdateTodoController ,
                   key: ValueKey<int>(widget.id) ,
                   child: _contentTextField(
                     model: widget.model ,
-                      providerListenable: provUpdateContentDirection ,
-                      contentController: contentController /// CreateTodoController
+                      providerListenable: widget.provUpdateContentDirection ,
+                      contentController: widget.contentController /// CreateTodoController
                   )
               ) ,
 
@@ -249,25 +214,42 @@ class _MobileCrateTodoWidgets {
             builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
-                child: App.conditional(
-                  condition: prov.watch(providerListenable).boolean ,
-                  builder: (BuildContext buildContext){
-                    return InkWell(
+                child: AnimatedConditional(
+                    state: prov.watch(providerListenable).boolean ,
+
+                    first: InkWell(
                         onTap: () {
                           /// To Change Direction for TextField
                           prov.read(providerListenable).switchBoolean();
                         } ,
-                        child: const Text("RTL"));
-                  } ,
-                  fallback: (BuildContext buildContext){
-                    return InkWell(
+                        child: const Text("RTL")) ,
+
+                    second: InkWell(
                         onTap: () {
                           /// To Change Direction for TextField
                           prov.read(providerListenable).switchBoolean();
-                        },
-                        child: const Text("LTR"));
-                  } ,
+                        } ,
+                        child: const Text("LTR"))
                 ),
+                // child: App.conditional(
+                //   condition: prov.watch(providerListenable).boolean ,
+                //   builder: (BuildContext buildContext){
+                //     return InkWell(
+                //         onTap: () {
+                //           /// To Change Direction for TextField
+                //           prov.read(providerListenable).switchBoolean();
+                //         } ,
+                //         child: const Text("RTL"));
+                //   } ,
+                //   fallback: (BuildContext buildContext){
+                //     return InkWell(
+                //         onTap: () {
+                //           /// To Change Direction for TextField
+                //           prov.read(providerListenable).switchBoolean();
+                //         },
+                //         child: const Text("LTR"));
+                //   } ,
+                // ),
               );
             }
         )

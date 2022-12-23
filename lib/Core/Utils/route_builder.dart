@@ -31,8 +31,14 @@ class RouteGenerators {
       case updateTodoScreen :
         final List data = settings.arguments as List;
         return _cupertinoPageRoute(MainUpdateTodoScreen(
-            id: data.elementAt(0) , /// for Id
-            todoModel: data.elementAt(1),
+            id: data.elementAt(0),
+            title: data.elementAt(1) ,
+            content: data.elementAt(2) ,
+            date: data.elementAt(3) ,
+            checkTitleDirection: data.elementAt(4) ,
+            checkContentDirection: data.elementAt(5) ,
+            //model: data.elementAt(6),
+            //todoModel: data.elementAt(1),
         ));
 
     }
