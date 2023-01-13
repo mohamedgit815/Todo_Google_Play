@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_app/Core/Utils/enums.dart';
+import 'package:todo_app/Core/app.dart';
+
 
 class LangState extends ChangeNotifier {
   final String _key = "lang";
@@ -10,7 +11,7 @@ class LangState extends ChangeNotifier {
   String get lang => _lang;
 
   LangState() {
-    _lang = LangEnum.english.name;
+    _lang = App.strings.constance.english;
     _loadFromPrefs();
   }
 
@@ -26,7 +27,7 @@ class LangState extends ChangeNotifier {
 
   _loadFromPrefs() async {
     await _initPrefs();
-    _lang = _prefs.getString(_key) ?? LangEnum.english.name;
+    _lang = _prefs.getString(_key) ?? App.strings.constance.english;
     notifyListeners();
   }
 

@@ -5,11 +5,19 @@ import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/Core/app.dart';
 
+
 class GlobalController {
   /// To Hide The Keyboard for Screen
   void unFocusKeyBoard(BuildContext context) {
     return App.navigator.navigatorKey.currentState!.focusScopeNode.unfocus();
   }
+
+
+  /// Check Keyboard if Hide or No
+  bool checkKeyboard(BuildContext context){
+    return MediaQuery.of(context).viewInsets.bottom == 0;
+  }
+
 
   /// NotificationListener
   bool notificationListener({
@@ -24,6 +32,7 @@ class GlobalController {
     }
     return true;
   }
+
 
   /// To Cash Languages
   Locale switchLang(String lang) {
@@ -41,6 +50,7 @@ class GlobalController {
     }
     return Locale(lang,'');
   }
+
 
   /// To Ask User if he wants to exit Application or No
   Future<bool> customExitApp({required DateTime dateTime}) async {

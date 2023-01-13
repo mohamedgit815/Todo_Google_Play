@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/GlobalWidget/global_alert_dialog.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 import 'package:todo_app/Core/Utils/custom_widgets.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
+
 class MobileUpdateTodoPage extends ConsumerStatefulWidget {
-  final BoxConstraints constraints;
   final int id;
-  final TodoModel model;
+  final BaseTodoModel model;
   final ProviderListenable<ProviderState> provUpdateTitleDirection , provUpdateContentDirection;
   final TextEditingController titleController , contentController;
   final DBHelperController dbHelperController;
@@ -20,7 +19,6 @@ class MobileUpdateTodoPage extends ConsumerStatefulWidget {
     Key? key ,
     required this.id ,
     required this.model ,
-    required this.constraints ,
     required this.titleController ,
     required this.contentController ,
     required this.dbHelperController ,
@@ -41,131 +39,65 @@ with _MobileCrateTodoWidgets  {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return Scaffold(
       key: ValueKey<int>(widget.id) ,
-      onWillPop: () async {
-        if(
-        widget.titleController.text.isEmpty && widget.contentController.text.isEmpty
-        ) {
-         /// AlertDialog for WillPopScope
-          return await showDialog(
-              context: context,
-              builder: (BuildContext context) => GlobalAlertDialog(
-                title: App.constance.deleteDialog ,
-                  onPressForNo: () {
-                    /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                    Controller.navigator.navigatorHomeScreen(context);
-                  } ,
+      /// _MobileCreateTodoWidgets for FloatingActionButton
+      floatingActionButton: _floatingActionButton(
+        key: widget.id ,
+          onPress: () async {
 
-                  onPressForYes: () async {
-                   /// deleteItem used if TextField is Empty  path is: HomeController
-                      //return await deleteItem(id: widget.id)
-                      return await Controller.todo.deleteItem(id: widget.id , context: context)
-                          .then((value) async {
-                        /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                        Controller.navigator.navigatorHomeScreen(context);
-                      });
-                  }
-                  )
-          );
-        } else if (
-        widget.titleController.text.length != widget.model.title.length
-        || /// To Check TextField is empty or no
-            widget.contentController.text.length != widget.model.content.length
-        ) {
-          /// AlertDialog for WillPopScope
-          return await showDialog(
-              context: context,
-              builder: (BuildContext context) => GlobalAlertDialog(
-                  title: App.constance.saveDialog ,
+            /// i Do that to check TextField Empty or No
+            if(widget.titleController.text.isEmpty && widget.contentController.text.isEmpty) {
+              return await showDialog(
+                  context: context ,
+                  builder: (context)=> App.globalWidgets.globalAlertDialog(
+                    title: App.strings.languages.deleteDialog,
                   onPressForNo: () async {
-                    /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                    Controller.navigator.navigatorHomeScreen(context);
-                  } ,
-
+                      return await Controller.navigator.backOneScreen(context);
+                  },
                   onPressForYes: () async {
-                      /// updateTodoController used if TextField is not Empty path is: UpdateController
-                      return await Controller.todo.updateTodoController(
-                        context: context ,
-                        id: widget.id ,
-                        title: widget.titleController.text ,
-                        content: widget.contentController.text,
-                        checkTitleDirection: ref.read(widget.provUpdateTitleDirection).boolean ? 0 : 1 ,
-                        checkContentDirection: ref.read(widget.provUpdateContentDirection).boolean ? 0 : 1 ,
-
-                      );
+                    /// deleteItem used if TextField is Empty  path is: HomeController
+                    //return await deleteItem(id: widget.id )
+                    return await Controller.todo.deleteTodoController(id: widget.id , context: context)
+                        .then((value) async {
+                      /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+                      Controller.navigator.navigatorHomeScreen(context);
+                    });
                   }
-              )
-          );
-        } else {
-          return true;
-        }
-      },
-
-
-      child: GestureDetector(
-        key: ValueKey<int>(widget.id) ,
-        onTap: () {
-          /// GlobalController : To Hide Keyboard
-          return Controller.global.unFocusKeyBoard(context);
-        } ,
-        child: Scaffold(
-          key: ValueKey<int>(widget.id) ,
-          /// _MobileCreateTodoWidgets for FloatingActionButton
-          floatingActionButton: _floatingActionButton(
-            key: widget.id ,
-              onPress: () async {
-
-                /// i Do that to check TextField Empty or No
-                if(widget.titleController.text.isEmpty && widget.contentController.text.isEmpty) {
-                  return await showDialog(
-                      context: context ,
-                      builder: (context)=> GlobalAlertDialog(
-                        title: App.constance.deleteDialog,
-                      onPressForNo: () async {
-                          return await Controller.navigator.backOneScreen(context);
-                      },
-                      onPressForYes: () async {
-                        /// deleteItem used if TextField is Empty  path is: HomeController
-                        //return await deleteItem(id: widget.id )
-                        return await Controller.todo.deleteItem(id: widget.id , context: context)
-                            .then((value) async {
-                          /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                          Controller.navigator.navigatorHomeScreen(context);
-                        });
-                      }
-                  ));
-                } else {
-                  if(
-                  widget.model.title == widget.titleController.text
-                      &&
-                  widget.model.content == widget.contentController.text
-                  ) {
-                    return await Controller.navigator.backOneScreen(context);
-                  } else {
-                    /// updateTodoController used if TextField is not Empty path is: UpdateController
-                    return await Controller.todo.updateTodoController(
-                        context: context ,
-                        id: widget.id ,
-                        title: widget.titleController.text ,
-                        content: widget.contentController.text ,
-                        checkTitleDirection: ref.read(widget.provUpdateTitleDirection).boolean ? 0 : 1 ,
-                        checkContentDirection: ref.read(widget.provUpdateContentDirection).boolean ? 0 : 1
-                    );
-                  }
-                }
+              ));
+            } else {
+              if(
+              widget.model.title == widget.titleController.text
+                  &&
+              widget.model.content == widget.contentController.text
+              ) {
+                return await Controller.navigator.backOneScreen(context);
+              } else {
+                /// updateTodoController used if TextField is not Empty path is: UpdateController
+                return await Controller.todo.updateTodoController(
+                    context: context ,
+                    id: widget.id ,
+                    title: widget.titleController.text ,
+                    content: widget.contentController.text ,
+                    checkTitleDirection: ref.read(widget.provUpdateTitleDirection).boolean ? 0 : 1 ,
+                    checkContentDirection: ref.read(widget.provUpdateContentDirection).boolean ? 0 : 1
+                );
               }
-          ) ,
+            }
+          }
+      ) ,
 
-          /// _MobileCreateTodoWidgets for AppBar
-          appBar: _appBar(
-              key: widget.id ,
-              providerListenable: widget.provUpdateContentDirection ,
-            model: widget.model
-          ) ,
+      /// _MobileCreateTodoWidgets for AppBar
+      appBar: _appBar(
+          key: widget.id ,
+          providerListenable: widget.provUpdateContentDirection ,
+        model: widget.model
+      ) ,
 
 
-          body: Column(
+      body: LayoutBuilder(
+        builder: (BuildContext context , BoxConstraints constraints) {
+          return Column(
             children: [
 
               /// _MobileCreateTodoWidgets for _titleTextField
@@ -188,8 +120,8 @@ with _MobileCrateTodoWidgets  {
 
 
             ],
-          ),
-        ),
+          );
+        }
       ),
     );
   }
@@ -201,7 +133,7 @@ class _MobileCrateTodoWidgets {
 
   /// Appbar
   AppBar _appBar({
-    required int key , required TodoModel model ,
+    required int key , required BaseTodoModel model ,
     required ProviderListenable<ProviderState> providerListenable
   }) {
     //App.constance.appbarUpdateScreen
@@ -260,7 +192,7 @@ class _MobileCrateTodoWidgets {
 
   /// Floating Action Button
   _floatingActionButton({required VoidCallback onPress ,required int key}) {
-    return App.globalFloatingActionButton(
+    return App.globalWidgets.globalFloatingActionButton(
         key: ValueKey<int>(key) ,
         onPress: onPress ,
         child: const Icon(Icons.add)
@@ -271,12 +203,12 @@ class _MobileCrateTodoWidgets {
   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
   Consumer _titleTextField({
     required TextEditingController titleController ,
-    required TodoModel model ,
+    required BaseTodoModel model ,
     required ProviderListenable<ProviderState> providerListenable
   }) {
     return Consumer(
       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalTextField(
+        return App.globalWidgets.globalTextField(
             hintText: "Title" ,
             maxLine: 1 ,
             textInputAction: TextInputAction.next ,
@@ -293,12 +225,13 @@ class _MobileCrateTodoWidgets {
 
   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
   Consumer _contentTextField({
-    required TextEditingController contentController , required TodoModel model ,
+    required TextEditingController contentController ,
+    required BaseTodoModel model ,
     required ProviderListenable<ProviderState> providerListenable
   }) {
     return Consumer(
       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalTextField(
+        return App.globalWidgets.globalTextField(
             hintText: "Content" ,
             maxLine: 999999999 ,
             textInputAction: TextInputAction.unspecified ,

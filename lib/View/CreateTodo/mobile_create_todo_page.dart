@@ -8,14 +8,12 @@ import 'package:todo_app/Core/app.dart';
 
 
 class MobileCreateTodoPage extends ConsumerStatefulWidget {
-  final BoxConstraints constraints;
   final TextEditingController titleController , contentController;
   final DBHelperController dbHelperController;
   final ProviderListenable<ProviderState> provTitleDirection , provContentDirection;
 
   const MobileCreateTodoPage({
     Key? key ,
-    required this.constraints ,
     required this.titleController ,
     required this.contentController ,
     required this.dbHelperController ,
@@ -32,59 +30,27 @@ with _MobileCrateTodoWidgets {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return Scaffold(
+      /// _MobileCreateTodoWidgets for FloatingActionButton
+      floatingActionButton: _floatingActionButton(
+          onPress: () async {
+             await Controller.todo.createTodoController(
+              context: context ,
+              title: widget.titleController.text ,
+              content: widget.contentController.text ,
+               checkTitleDirection: ref.read(widget.provTitleDirection).boolean ? 0 : 1 ,
+               checkContentDirection: ref.read(widget.provContentDirection).boolean ? 0 : 1 ,
+             );
+          }
+      ) ,
 
-        /// To Check Controller is empty or no
-        if(widget.titleController.text.isNotEmpty || widget.contentController.text.isNotEmpty) {
-         /// AlertDialog for WillPopScope
-         return await showDialog(context: context , builder: (BuildContext buildContext) {
-           return App.globalAlertDialog(
-               title: App.constance.saveDialog ,
-               onPressForNo: ()  {
-                 Controller.navigator.navigatorHomeScreen(context);
-               } ,
-               onPressForYes: () async {
-                 await Controller.todo.createTodo(
-                   context: context ,
-                   title: widget.titleController.text ,
-                   content: widget.contentController.text ,
-                   checkTitleDirection: ref.read(widget.provTitleDirection).boolean ? 0 : 1 ,
-                   checkContentDirection: ref.read(widget.provContentDirection).boolean ? 0 : 1 ,
-                 );
-               }
-           );
-         });
-        } else {
-          return true;
-        }
-
-      },
-      child: GestureDetector(
-        onTap: () {
-          /// GlobalController : To Hide Keyboard
-          return Controller.global.unFocusKeyBoard(context);
-        } ,
-        child: Scaffold(
-
-          /// _MobileCreateTodoWidgets for FloatingActionButton
-          floatingActionButton: _floatingActionButton(
-              onPress: () async {
-                 await Controller.todo.createTodo(
-                  context: context ,
-                  title: widget.titleController.text ,
-                  content: widget.contentController.text ,
-                   checkTitleDirection: ref.read(widget.provTitleDirection).boolean ? 0 : 1 ,
-                   checkContentDirection: ref.read(widget.provContentDirection).boolean ? 0 : 1 ,
-                 );
-              }
-          ) ,
-
-          /// _MobileCreateTodoWidgets for AppBar
-          appBar: _appBar(providerListenable: widget.provContentDirection) ,
+      /// _MobileCreateTodoWidgets for AppBar
+      appBar: _appBar(providerListenable: widget.provContentDirection) ,
 
 
-          body: Column(
+      body: LayoutBuilder(
+        builder: (BuildContext context,BoxConstraints constraints) {
+          return Column(
             children: [
 
               /// _MobileCreateTodoWidgets for _titleTextField
@@ -104,9 +70,9 @@ with _MobileCrateTodoWidgets {
 
 
             ],
-          )
-        ),
-      ),
+          );
+        }
+      )
     );
   }
 
@@ -120,7 +86,7 @@ class _MobileCrateTodoWidgets {
   /// Appbar
   AppBar _appBar({required ProviderListenable<ProviderState> providerListenable}) {
     return AppBar(
-      title: CustomText(text: App.constance.appbarCreateScreen , fontSize: 20.0) ,
+      title: CustomText(text: App.strings.languages.appbarCreateScreen , fontSize: 20.0) ,
       centerTitle: true ,
       actions: [
         Consumer(
@@ -167,7 +133,7 @@ class _MobileCrateTodoWidgets {
 
   /// Floating Action Button
    Widget _floatingActionButton({required VoidCallback onPress}) {
-    return App.globalFloatingActionButton(
+    return App.globalWidgets.globalFloatingActionButton(
         onPress: onPress ,
         child: const Icon(Icons.add)
         );
@@ -181,7 +147,7 @@ class _MobileCrateTodoWidgets {
   }) {
     return Consumer(
       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalTextField(
+        return App.globalWidgets.globalTextField(
             hintText: "Title" ,
             maxLine: 1 ,
             suffixIcon: IconButton(onPressed: (){
@@ -203,7 +169,7 @@ class _MobileCrateTodoWidgets {
   }) {
     return Consumer(
       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalTextField(
+        return App.globalWidgets.globalTextField(
             hintText: "Content" ,
             maxLine: 999999999 ,
             textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,

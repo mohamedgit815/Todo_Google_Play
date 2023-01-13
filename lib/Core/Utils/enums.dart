@@ -4,7 +4,11 @@ enum RequestsState {
   error
 }
 
-enum LangEnum {
-  english ,
-  arabic ,
+
+enum ModelEnum {
+  title ,
+  content ,
+  date ,
+  checkTitleDirection ,
+  checkContentDirection
 }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/Core/Utils/route_builder.dart';
 import 'package:todo_app/Core/app.dart';
-import 'package:todo_app/View/HomeTodo/main_home_todo_screen.dart';
-
 
 
 class MyApp extends StatelessWidget {
@@ -24,13 +22,14 @@ class MyApp extends StatelessWidget {
 
       darkTheme: App.theme.darkThemeData() ,
 
+      initialRoute: RouteGenerators.homeScreen
+
       //home: const MainHomeTodoScreen(),
 
       //initialRoute: RouteGenerators.createScreen ,
       //initialRoute: RouteGenerators.homeScreen ,
 
-      home: const MainHomeTodoScreen()
-      //home: const TestPage()
+      //home: const MainHomeTodoScreen()
     );
   }
 }

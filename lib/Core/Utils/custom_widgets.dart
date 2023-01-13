@@ -11,7 +11,7 @@ extension MainContext on BuildContext {
   double get width => MediaQuery.of(this).size.width;
 }
 
-class CustomWidgets {
+class AlertWidgets {
   ScaffoldMessengerState customSnackBar({
     required String text,
     required BuildContext context ,

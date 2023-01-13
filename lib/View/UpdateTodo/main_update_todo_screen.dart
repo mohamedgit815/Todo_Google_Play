@@ -32,10 +32,19 @@ class MainUpdateTodoScreen extends ConsumerStatefulWidget {
 
 class _MainUpdateTodoScreenState extends ConsumerState<MainUpdateTodoScreen>
 with _MainUpdateTodo {
+  late BaseTodoModel todoModel;
 
   @override
   void initState() {
     super.initState();
+    todoModel = TodoModel(
+        checkTitleDirection: widget.checkTitleDirection ,
+        checkContentDirection: widget.checkContentDirection ,
+        title: widget.title ,
+        content: widget.content ,
+        date: widget.date
+    );
+
     dbHelperController = Controller.dbHelper;
     titleController.text = widget.title; /// To TextField Equal Data from DataBase
     contentController.text = widget.content; /// To TextField Equal Data from DataBase
@@ -75,8 +84,6 @@ with _MainUpdateTodo {
     contentController.dispose();
   }
 
-
-
   // @override
   // // TODO: implement restorationId
   // String? get restorationId => App.constance.updateTodoRestoration;
@@ -90,29 +97,89 @@ with _MainUpdateTodo {
 
   @override
   Widget build(BuildContext context) {
-    final TodoModel todoModel = TodoModel(checkTitleDirection: widget.checkTitleDirection, checkContentDirection: widget.checkContentDirection, title: widget.title, content: widget.content, date: widget.date);
 
-    return LayoutBuilder(
-          builder: (BuildContext context,BoxConstraints constraints) {
+    return WillPopScope(
+      onWillPop: () async {
+        if(
+        titleController.text.isEmpty && contentController.text.isEmpty
+        ) {
+          /// AlertDialog for WillPopScope
+          return await showDialog(
+              context: context,
+              builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
+                  title: App.strings.languages.deleteDialog ,
+                  onPressForNo: () {
+                    /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+                    Controller.navigator.navigatorHomeScreen(context);
+                  } ,
 
-            return App.responsiveBuilderScreen(
+                  onPressForYes: () async {
+                    /// deleteItem used if TextField is Empty  path is: HomeController
+                    //return await deleteItem(id: widget.id)
+                    return await Controller.todo.deleteTodoController(id: widget.id , context: context)
+                        .then((value) async {
+                      /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+                      Controller.navigator.navigatorHomeScreen(context);
+                    });
+                  }
+              )
+          );
+        } else if (
+        titleController.text.length != widget.title.length
+            || /// To Check TextField is empty or no
+            contentController.text.length != widget.content.length
+        ) {
+          /// AlertDialog for WillPopScope
+          return await showDialog(
+              context: context,
+              builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
+                  title: App.strings.languages.saveDialog ,
+                  onPressForNo: () async {
+                    /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+                    Controller.navigator.navigatorHomeScreen(context);
+                  } ,
 
-              mobile: MobileUpdateTodoPage(
-                constraints: constraints ,
-                id: widget.id ,
-                model: todoModel ,
-                titleController: titleController ,
-                contentController: contentController ,
-                dbHelperController: dbHelperController ,
-                provUpdateTitleDirection: provUpdateTitleDirection ,
-                provUpdateContentDirection: provUpdateContentDirection
-              ) ,
+                  onPressForYes: () async {
+                    /// updateTodoController used if TextField is not Empty path is: UpdateController
+                    return await Controller.todo.updateTodoController(
+                      context: context ,
+                      id: widget.id ,
+                      title: titleController.text ,
+                      content: contentController.text,
+                      checkTitleDirection: ref.read(provUpdateTitleDirection).boolean ? 0 : 1 ,
+                      checkContentDirection: ref.read(provUpdateContentDirection).boolean ? 0 : 1 ,
+
+                    );
+                  }
+              )
+          );
+        } else {
+          return true;
+        }
+      },
+      child: GestureDetector(
+        onTap: () {
+          /// GlobalController : To Hide Keyboard
+          return Controller.global.unFocusKeyBoard(context);
+        } ,
 
 
-              deskTop: null ,
-              tablet: null ,
-            );
-          }
+        child: App.packageWidgets.responsiveBuilderScreen(
+          mobile: MobileUpdateTodoPage(
+              id: widget.id ,
+              model: todoModel ,
+              titleController: titleController ,
+              contentController: contentController ,
+              dbHelperController: dbHelperController ,
+              provUpdateTitleDirection: provUpdateTitleDirection ,
+              provUpdateContentDirection: provUpdateContentDirection
+          ) ,
+
+
+          deskTop: null ,
+          tablet: null ,
+        ),
+      ),
     );
   }
 }

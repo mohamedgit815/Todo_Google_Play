@@ -76,6 +76,23 @@ class ProviderState extends ChangeNotifier {
   //
 }
 
+class BottomBarState extends ChangeNotifier {
+
+  /// List for Bottom Navigation Bar
+  final List<Widget> pages = const [
+    // MainHomeScreen() ,
+    // MainFriendsScreen() ,
+  ];
+
+  /// Integer
+  int integer = 0;
+
+  int equalValueInteger(int v) {
+    notifyListeners();
+    return integer = v;
+  }
+}
+
 class BooleanState extends ChangeNotifier {
   bool boolean = true;
 

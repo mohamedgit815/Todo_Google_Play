@@ -1,48 +1,49 @@
-// class TodoModel {
-//
-//   final String title , content ;
-//
-//   const TodoModel({required this.title,required this.content });
-//
-//   factory TodoModel.fromJson(Map<String , dynamic>json) {
-//     return TodoModel(title: json['title'], content: json['content'] );
-//   }
-//
-//   Map<String , dynamic> toJson()=>{ "title" : title , "content" : content };
-//
-// }
+import 'package:todo_app/Core/Utils/enums.dart';
 
 
-class TodoModel {
-
+class BaseTodoModel {
   final String title , content , date;
   final int checkTitleDirection , checkContentDirection;
 
-  const TodoModel({
-    required this.checkTitleDirection ,
-    required this.checkContentDirection ,
+  const BaseTodoModel({
     required this.title ,
     required this.content ,
-    required this.date
+    required this.date ,
+    required this.checkTitleDirection ,
+    required this.checkContentDirection
   });
+}
+
+
+class TodoModel extends BaseTodoModel {
+  TodoModel({
+
+    required super.title ,
+    required super.content ,
+    required super.date ,
+    required super.checkTitleDirection ,
+    required super.checkContentDirection
+  });
+
+
 
   factory TodoModel.fromJson(Map<String , dynamic>json) {
     return TodoModel(
-        title: json['title'] ,
-        content: json['content'] ,
-        date: json['date'] ,
-        checkTitleDirection: json['checkTitleDirection'] ,
-        checkContentDirection: json['checkContentDirection']
+        title: json[ModelEnum.title.name] ,
+        content: json[ModelEnum.content.name] ,
+        date: json[ModelEnum.date.name] ,
+        checkTitleDirection: json[ModelEnum.checkTitleDirection.name] ,
+        checkContentDirection: json[ModelEnum.checkContentDirection.name]
 
     );
   }
 
   Map<String , dynamic> toJson() => {
-    "title" : title ,
-    "content" : content ,
-    "date" : date ,
-    "checkTitleDirection" : checkTitleDirection ,
-    "checkContentDirection" : checkContentDirection
+    ModelEnum.title.name : title ,
+    ModelEnum.content.name : content ,
+    ModelEnum.date.name : date ,
+    ModelEnum.checkTitleDirection.name : checkTitleDirection ,
+    ModelEnum.checkContentDirection.name : checkContentDirection
   };
 
 }

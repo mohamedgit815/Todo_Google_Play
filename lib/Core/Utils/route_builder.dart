@@ -26,7 +26,9 @@ class RouteGenerators {
 
       case homeScreen : return _materialPageRoute(const MainHomeTodoScreen());
 
+
       case createScreen : return _cupertinoPageRoute(const MainCreateTodoScreen());
+
 
       case updateTodoScreen :
         final List data = settings.arguments as List;
@@ -36,7 +38,7 @@ class RouteGenerators {
             content: data.elementAt(2) ,
             date: data.elementAt(3) ,
             checkTitleDirection: data.elementAt(4) ,
-            checkContentDirection: data.elementAt(5) ,
+            checkContentDirection: data.elementAt(5)
             //model: data.elementAt(6),
             //todoModel: data.elementAt(1),
         ));

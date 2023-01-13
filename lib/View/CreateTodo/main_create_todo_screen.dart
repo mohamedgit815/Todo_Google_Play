@@ -7,16 +7,16 @@ import 'package:todo_app/Controller/db_helper_controller.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 
 
-class MainCreateTodoScreen extends StatefulWidget {
+class MainCreateTodoScreen extends ConsumerStatefulWidget {
 
   const MainCreateTodoScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainCreateTodoScreen> createState() => _MainCreateTodoScreenState();
+  ConsumerState<MainCreateTodoScreen> createState() => _MainCreateTodoScreenState();
 }
 
 
-class _MainCreateTodoScreenState extends State<MainCreateTodoScreen>
+class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
     with _MainCreateTodo , RestorationMixin {
 
   @override
@@ -34,33 +34,68 @@ class _MainCreateTodoScreenState extends State<MainCreateTodoScreen>
 
   @override
   // TODO: implement restorationId
-  String? get restorationId => App.constance.createTodoRestoration;
+  String? get restorationId => App.strings.constance.createTodoRestoration;
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(titleController, App.constance.createTitleRestorationId);
-    registerForRestoration(contentController, App.constance.createContentRestorationId);
+    registerForRestoration(titleController, App.strings.constance.createTitleRestorationId);
+    registerForRestoration(contentController, App.strings.constance.createContentRestorationId);
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-          builder: (BuildContext context,BoxConstraints constraints) {
-            return App.responsiveBuilderScreen(
-              mobile: MobileCreateTodoPage(
-                  constraints: constraints ,
-                titleController: titleController.value ,
-                contentController: contentController.value ,
-                dbHelperController: dbHelperController ,
-                provTitleDirection: provTitleDirection ,
-                provContentDirection: provContentDirection ,
-              ) ,
-              deskTop: null ,
-              tablet: null ,
+    return WillPopScope(
+      onWillPop: () async {
+
+        /// To Check Controller is empty or no
+        if(titleController.value.text.isNotEmpty || contentController.value.text.isNotEmpty) {
+          /// AlertDialog for WillPopScope
+          return await showDialog(context: context , builder: (BuildContext buildContext) {
+            return App.globalWidgets.globalAlertDialog(
+                title: App.strings.languages.saveDialog ,
+                onPressForNo: ()  {
+                  Controller.navigator.navigatorHomeScreen(context);
+                } ,
+                onPressForYes: () async {
+                  await Controller.todo.createTodoController(
+                    context: context ,
+                    title: titleController.value.text ,
+                    content: contentController.value.text ,
+                    checkTitleDirection: ref.read(provTitleDirection).boolean ? 0 : 1 ,
+                    checkContentDirection: ref.read(provContentDirection).boolean ? 0 : 1 ,
+                  );
+                }
             );
-          }
+          });
+        } else {
+          return true;
+        }
+
+      },
+
+
+      child: GestureDetector(
+        onTap: () {
+          /// GlobalController : To Hide Keyboard
+          return Controller.global.unFocusKeyBoard(context);
+        } ,
+
+
+        child: App.packageWidgets.responsiveBuilderScreen(
+          mobile: MobileCreateTodoPage(
+              titleController: titleController.value ,
+              contentController: contentController.value ,
+              dbHelperController: dbHelperController ,
+              provTitleDirection: provTitleDirection ,
+              provContentDirection: provContentDirection
+          ) ,
+          deskTop: null ,
+          tablet: null ,
+        ),
+      ),
     );
+
   }
 }
 

@@ -5,7 +5,12 @@ class ResponsiveBuilderScreen extends StatelessWidget {
   final Widget mobile;
   final Widget? tablet;
   final Widget? deskTop;
-  const ResponsiveBuilderScreen({Key? key,required this.mobile,this.tablet,this.deskTop}) : super(key: key);
+  const ResponsiveBuilderScreen({
+    Key? key ,
+    required this.mobile ,
+    this.tablet ,
+    this.deskTop
+  }) : super(key: key);
 
 
   @override

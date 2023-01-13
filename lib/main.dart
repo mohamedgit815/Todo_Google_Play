@@ -6,6 +6,7 @@ import 'package:todo_app/Core/Utils/my_app.dart';
 
 
 Future<void> main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await Controller.dbHelper.createDatabase();
@@ -13,4 +14,5 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp( const ProviderScope( child: MyApp() ));
+
 }

@@ -7,20 +7,21 @@ import 'package:todo_app/Controller/db_helper_controller.dart';
 import 'package:todo_app/Core/ProviderState/provider_state.dart';
 
 
-class MainHomeTodoScreen extends StatefulWidget {
+class MainHomeTodoScreen extends ConsumerStatefulWidget {
 
   const MainHomeTodoScreen({Key? key}) : super(key: key);
 
   @override
-  State<MainHomeTodoScreen> createState() => _MainHomeTodoScreenState();
+  ConsumerState<MainHomeTodoScreen> createState() => _MainHomeTodoScreenState();
 }
 
-class _MainHomeTodoScreenState extends State<MainHomeTodoScreen>
+class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen>
     with _MainHomeTodo {
 
   @override
   void initState() {
     super.initState();
+    notificationProv = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
     dbHelperController = Controller.dbHelper;
   }
 
@@ -29,15 +30,25 @@ class _MainHomeTodoScreenState extends State<MainHomeTodoScreen>
   Widget build(BuildContext context) {
     return LayoutBuilder(
           builder: (BuildContext context , BoxConstraints constraints) {
-            return App.responsiveBuilderScreen(
-              mobile: MobileHomeTodoPage(
-                constraints: constraints ,
-                dbHelperController: dbHelperController ,
-                notificationProv: notificationProv ,
-              ) ,
+            return NotificationListener(
+              onNotification: (UserScrollNotification notification) {
+                /// HomeTodoController notificationListener
+                return Controller.global.notificationListener(
+                    notification: notification ,
+                    ref: ref ,
+                    providerListenable: notificationProv
+                );
+              },
+              child: App.packageWidgets.responsiveBuilderScreen(
+                mobile: MobileHomeTodoPage(
+                  dbHelperController: dbHelperController ,
+                  notificationProv: notificationProv ,
+                ) ,
 
-              deskTop: null ,
-              tablet: null ,
+                deskTop: null ,
+
+                tablet: null ,
+              ),
             );
           }
     );
@@ -47,6 +58,6 @@ class _MainHomeTodoScreenState extends State<MainHomeTodoScreen>
 
 class _MainHomeTodo {
   /// Variable
-  final ProviderListenable<ProviderState> notificationProv = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
+  late ProviderListenable<ProviderState> notificationProv ;
   late DBHelperController dbHelperController;
 }

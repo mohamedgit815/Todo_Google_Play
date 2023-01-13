@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/Core/Utils/route_builder.dart';
 import 'package:todo_app/Core/app.dart';
 
+
 class NavigatorController {
-
-
   /// Back Screen
   Future<dynamic> backOneScreen(BuildContext context) async {
     return await App.navigator.backPageRouter(context: context);
