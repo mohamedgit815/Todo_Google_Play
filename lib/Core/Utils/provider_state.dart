@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_app/Core/Utils/custom_widgets.dart';
 
 
 class ProviderState extends ChangeNotifier {
@@ -147,6 +148,83 @@ class PreferencesState extends ChangeNotifier {
   bool get darkTheme => _darkTheme;
 
   PreferencesState(String key) {
+    _darkTheme = true;
+    _key = key;
+    _loadFromPrefs();
+  }
+
+
+  toggleTheme() {
+    _darkTheme = !_darkTheme;
+    _saveToPrefs();
+    notifyListeners();
+  }
+
+
+  _initPrefs() async {
+    _prefs ??= await SharedPreferences.getInstance();
+  }
+
+
+  _loadFromPrefs() async {
+    await _initPrefs();
+    _darkTheme = _prefs!.getBool(_key) ?? true;
+    notifyListeners();
+  }
+
+
+  _saveToPrefs() async {
+    await _initPrefs();
+    await _prefs!.setBool(_key, _darkTheme);
+  }
+}
+
+class PreferencesStringState extends ChangeNotifier {
+  late SharedPreferences _prefs;
+  late String _lang;
+  late String _key;
+  String get lang => _lang;
+
+
+  PreferencesStringState({required String key , required String defaultName}) {
+    _lang = defaultName;
+    _key = key;
+    _loadFromPrefs();
+  }
+
+
+  toggleLang(String langV) {
+    _lang = langV;
+    _saveToPrefs();
+    notifyListeners();
+  }
+
+  _initPrefs() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  _loadFromPrefs() async {
+    await _initPrefs();
+    _lang = _prefs.getString(_key) ?? LangEnum.en.name;
+    notifyListeners();
+  }
+
+  _saveToPrefs() async {
+    await _initPrefs();
+    await _prefs.setString(_key, _lang);
+  }
+}
+
+class PreferencesBooleanState extends ChangeNotifier {
+  /// To Load Data by Shared Preferences
+
+  late String _key;
+  SharedPreferences? _prefs;
+  late bool _darkTheme;
+
+  bool get darkTheme => _darkTheme;
+
+  PreferencesBooleanState(String key) {
     _darkTheme = true;
     _key = key;
     _loadFromPrefs();
