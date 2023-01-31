@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/ProviderState/provider_state.dart';
-import 'package:todo_app/Core/Utils/custom_widgets.dart';
+import 'package:todo_app/Core/Utils/provider_state.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
+import 'package:todo_app/View/widgets.dart';
 
 
 class MobileUpdateTodoPage extends ConsumerStatefulWidget {
   final int id;
   final BaseTodoModel model;
-  final ProviderListenable<ProviderState> provUpdateTitleDirection , provUpdateContentDirection;
+  final ProviderListenable<BooleanState> provUpdateTitleDirection , provUpdateContentDirection;
   final TextEditingController titleController , contentController;
-  final DBHelperController dbHelperController;
+  final BaseDBHelperController dbHelperController;
 
   const MobileUpdateTodoPage({
     Key? key ,
@@ -30,8 +30,7 @@ class MobileUpdateTodoPage extends ConsumerStatefulWidget {
   ConsumerState<MobileUpdateTodoPage> createState() => _MobileUpdateTodoPageState();
 }
 
-class _MobileUpdateTodoPageState extends ConsumerState<MobileUpdateTodoPage>
-with _MobileCrateTodoWidgets  {
+class _MobileUpdateTodoPageState extends ConsumerState<MobileUpdateTodoPage> {
 
 
 
@@ -42,7 +41,7 @@ with _MobileCrateTodoWidgets  {
     return Scaffold(
       key: ValueKey<int>(widget.id) ,
       /// _MobileCreateTodoWidgets for FloatingActionButton
-      floatingActionButton: _floatingActionButton(
+      floatingActionButton: Widgets.updateMobile.floatingActionButton(
         key: widget.id ,
           onPress: () async {
 
@@ -51,7 +50,7 @@ with _MobileCrateTodoWidgets  {
               return await showDialog(
                   context: context ,
                   builder: (context)=> App.globalWidgets.globalAlertDialog(
-                    title: App.strings.languages.deleteDialog,
+                    title: App.strings.deleteDialog,
                   onPressForNo: () async {
                       return await Controller.navigator.backOneScreen(context);
                   },
@@ -88,7 +87,7 @@ with _MobileCrateTodoWidgets  {
       ) ,
 
       /// _MobileCreateTodoWidgets for AppBar
-      appBar: _appBar(
+      appBar: Widgets.updateMobile.appBar(
           key: widget.id ,
           providerListenable: widget.provUpdateContentDirection ,
         model: widget.model
@@ -101,7 +100,7 @@ with _MobileCrateTodoWidgets  {
             children: [
 
               /// _MobileCreateTodoWidgets for _titleTextField
-              _titleTextField(
+              Widgets.updateMobile.titleTextField(
                   model: widget.model ,
                   providerListenable: widget.provUpdateTitleDirection ,
                   titleController: widget.titleController /// CreateTodoController
@@ -111,7 +110,7 @@ with _MobileCrateTodoWidgets  {
               /// _MobileCreateTodoWidgets for _contentTextField
               Expanded(
                   key: ValueKey<int>(widget.id) ,
-                  child: _contentTextField(
+                  child: Widgets.updateMobile.contentTextField(
                     model: widget.model ,
                       providerListenable: widget.provUpdateContentDirection ,
                       contentController: widget.contentController /// CreateTodoController
@@ -128,119 +127,119 @@ with _MobileCrateTodoWidgets  {
 
 }
 
-/// This class to write all your Widgets
-class _MobileCrateTodoWidgets {
-
-  /// Appbar
-  AppBar _appBar({
-    required int key , required BaseTodoModel model ,
-    required ProviderListenable<ProviderState> providerListenable
-  }) {
-    //App.constance.appbarUpdateScreen
-    return AppBar(
-      key: ValueKey<int>(key),
-      title: CustomText(text: model.date.substring(0,19) , fontSize: 20.0) ,
-      centerTitle: true ,
-      actions: [
-        Consumer(
-            builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
-                child: AnimatedConditional(
-                    state: prov.watch(providerListenable).boolean ,
-
-                    first: InkWell(
-                        onTap: () {
-                          /// To Change Direction for TextField
-                          prov.read(providerListenable).switchBoolean();
-                        } ,
-                        child: const Text("RTL")) ,
-
-                    second: InkWell(
-                        onTap: () {
-                          /// To Change Direction for TextField
-                          prov.read(providerListenable).switchBoolean();
-                        } ,
-                        child: const Text("LTR"))
-                ),
-                // child: App.conditional(
-                //   condition: prov.watch(providerListenable).boolean ,
-                //   builder: (BuildContext buildContext){
-                //     return InkWell(
-                //         onTap: () {
-                //           /// To Change Direction for TextField
-                //           prov.read(providerListenable).switchBoolean();
-                //         } ,
-                //         child: const Text("RTL"));
-                //   } ,
-                //   fallback: (BuildContext buildContext){
-                //     return InkWell(
-                //         onTap: () {
-                //           /// To Change Direction for TextField
-                //           prov.read(providerListenable).switchBoolean();
-                //         },
-                //         child: const Text("LTR"));
-                //   } ,
-                // ),
-              );
-            }
-        )
-      ],
-    );
-  }
-
-
-  /// Floating Action Button
-  _floatingActionButton({required VoidCallback onPress ,required int key}) {
-    return App.globalWidgets.globalFloatingActionButton(
-        key: ValueKey<int>(key) ,
-        onPress: onPress ,
-        child: const Icon(Icons.add)
-        );
-  }
-
-
-  /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
-  Consumer _titleTextField({
-    required TextEditingController titleController ,
-    required BaseTodoModel model ,
-    required ProviderListenable<ProviderState> providerListenable
-  }) {
-    return Consumer(
-      builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalWidgets.globalTextField(
-            hintText: "Title" ,
-            maxLine: 1 ,
-            textInputAction: TextInputAction.next ,
-            controller: titleController ,
-            suffixIcon: IconButton(onPressed: (){
-              prov.read(providerListenable).switchBoolean();
-            }, icon: Icon(Icons.cached , color: App.color.darkMainColor,)),
-            textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
-        );
-      }
-    );
-  }
-
-
-  /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
-  Consumer _contentTextField({
-    required TextEditingController contentController ,
-    required BaseTodoModel model ,
-    required ProviderListenable<ProviderState> providerListenable
-  }) {
-    return Consumer(
-      builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalWidgets.globalTextField(
-            hintText: "Content" ,
-            maxLine: 999999999 ,
-            textInputAction: TextInputAction.unspecified ,
-            controller: contentController ,
-            textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
-        );
-      }
-    );
-  }
-
-
-}
+// /// This class to write all your Widgets
+// class _MobileCrateTodoWidgets {
+//
+//   /// Appbar
+//   AppBar _appBar({
+//     required int key , required BaseTodoModel model ,
+//     required ProviderListenable<BooleanState> providerListenable
+//   }) {
+//     //App.constance.appbarUpdateScreen
+//     return AppBar(
+//       key: ValueKey<int>(key),
+//       title: CustomText(text: model.date.substring(0,19) , fontSize: 20.0) ,
+//       centerTitle: true ,
+//       actions: [
+//         Consumer(
+//             builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+//               return Padding(
+//                 padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
+//                 child: AnimatedConditional(
+//                     state: prov.watch(providerListenable).boolean ,
+//
+//                     first: InkWell(
+//                         onTap: () {
+//                           /// To Change Direction for TextField
+//                           prov.read(providerListenable).switchBoolean();
+//                         } ,
+//                         child: const Text("RTL")) ,
+//
+//                     second: InkWell(
+//                         onTap: () {
+//                           /// To Change Direction for TextField
+//                           prov.read(providerListenable).switchBoolean();
+//                         } ,
+//                         child: const Text("LTR"))
+//                 ),
+//                 // child: App.conditional(
+//                 //   condition: prov.watch(providerListenable).boolean ,
+//                 //   builder: (BuildContext buildContext){
+//                 //     return InkWell(
+//                 //         onTap: () {
+//                 //           /// To Change Direction for TextField
+//                 //           prov.read(providerListenable).switchBoolean();
+//                 //         } ,
+//                 //         child: const Text("RTL"));
+//                 //   } ,
+//                 //   fallback: (BuildContext buildContext){
+//                 //     return InkWell(
+//                 //         onTap: () {
+//                 //           /// To Change Direction for TextField
+//                 //           prov.read(providerListenable).switchBoolean();
+//                 //         },
+//                 //         child: const Text("LTR"));
+//                 //   } ,
+//                 // ),
+//               );
+//             }
+//         )
+//       ],
+//     );
+//   }
+//
+//
+//   /// Floating Action Button
+//   _floatingActionButton({required VoidCallback onPress ,required int key}) {
+//     return App.globalWidgets.globalFloatingActionButton(
+//         key: ValueKey<int>(key) ,
+//         onPress: onPress ,
+//         child: const Icon(Icons.add)
+//         );
+//   }
+//
+//
+//   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
+//   Consumer _titleTextField({
+//     required TextEditingController titleController ,
+//     required BaseTodoModel model ,
+//     required ProviderListenable<BooleanState> providerListenable
+//   }) {
+//     return Consumer(
+//       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+//         return App.globalWidgets.globalTextField(
+//             hintText: "Title" ,
+//             maxLine: 1 ,
+//             textInputAction: TextInputAction.next ,
+//             controller: titleController ,
+//             suffixIcon: IconButton(onPressed: (){
+//               prov.read(providerListenable).switchBoolean();
+//             }, icon: Icon(Icons.cached , color: App.color.darkMainColor,)),
+//             textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
+//         );
+//       }
+//     );
+//   }
+//
+//
+//   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
+//   Consumer _contentTextField({
+//     required TextEditingController contentController ,
+//     required BaseTodoModel model ,
+//     required ProviderListenable<BooleanState> providerListenable
+//   }) {
+//     return Consumer(
+//       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+//         return App.globalWidgets.globalTextField(
+//             hintText: "Content" ,
+//             maxLine: 999999999 ,
+//             textInputAction: TextInputAction.unspecified ,
+//             controller: contentController ,
+//             textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
+//         );
+//       }
+//     );
+//   }
+//
+//
+// }

@@ -4,7 +4,7 @@ import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/View/HomeTodo/mobile_home_todo_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/ProviderState/provider_state.dart';
+import 'package:todo_app/Core/Utils/provider_state.dart';
 
 
 class MainHomeTodoScreen extends ConsumerStatefulWidget {
@@ -21,7 +21,7 @@ class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen>
   @override
   void initState() {
     super.initState();
-    notificationProv = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
+    notificationProv = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
     dbHelperController = Controller.dbHelper;
   }
 
@@ -58,6 +58,6 @@ class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen>
 
 class _MainHomeTodo {
   /// Variable
-  late ProviderListenable<ProviderState> notificationProv ;
-  late DBHelperController dbHelperController;
+  late ProviderListenable<BooleanState> notificationProv ;
+  late BaseDBHelperController dbHelperController;
 }

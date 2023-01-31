@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/ProviderState/provider_state.dart';
-import 'package:todo_app/Core/Utils/custom_widgets.dart';
-import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/Core/Utils/provider_state.dart';
+import 'package:todo_app/View/widgets.dart';
+
 
 
 class MobileCreateTodoPage extends ConsumerStatefulWidget {
   final TextEditingController titleController , contentController;
-  final DBHelperController dbHelperController;
-  final ProviderListenable<ProviderState> provTitleDirection , provContentDirection;
+  final BaseDBHelperController dbHelperController;
+  final ProviderListenable<BooleanState> provTitleDirection , provContentDirection;
 
   const MobileCreateTodoPage({
     Key? key ,
@@ -25,14 +25,14 @@ class MobileCreateTodoPage extends ConsumerStatefulWidget {
   ConsumerState<MobileCreateTodoPage> createState() => _MobileCreateTodoPageState();
 }
 
-class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage>
-with _MobileCrateTodoWidgets {
+
+class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       /// _MobileCreateTodoWidgets for FloatingActionButton
-      floatingActionButton: _floatingActionButton(
+      floatingActionButton: Widgets.createTodoMobile.floatingActionButton(
           onPress: () async {
              await Controller.todo.createTodoController(
               context: context ,
@@ -45,7 +45,7 @@ with _MobileCrateTodoWidgets {
       ) ,
 
       /// _MobileCreateTodoWidgets for AppBar
-      appBar: _appBar(providerListenable: widget.provContentDirection) ,
+      appBar: Widgets.createTodoMobile.appBar(providerListenable: widget.provContentDirection,context: context) ,
 
 
       body: LayoutBuilder(
@@ -54,7 +54,7 @@ with _MobileCrateTodoWidgets {
             children: [
 
               /// _MobileCreateTodoWidgets for _titleTextField
-              _titleTextField( /// CreateTodoController
+              Widgets.createTodoMobile.titleTextField( /// CreateTodoController
                   providerListenable: widget.provTitleDirection ,
                   titleController: widget.titleController
               ) ,
@@ -62,7 +62,7 @@ with _MobileCrateTodoWidgets {
 
               /// _MobileCreateTodoWidgets for _contentTextField
               Expanded(
-                  child: _contentTextField( /// CreateTodoController
+                  child: Widgets.createTodoMobile.contentTextField( /// CreateTodoController
                       contentController: widget.contentController,
                       providerListenable: widget.provContentDirection
                   )
@@ -81,103 +81,108 @@ with _MobileCrateTodoWidgets {
 
 }
 
-class _MobileCrateTodoWidgets {
-
-  /// Appbar
-  AppBar _appBar({required ProviderListenable<ProviderState> providerListenable}) {
-    return AppBar(
-      title: CustomText(text: App.strings.languages.appbarCreateScreen , fontSize: 20.0) ,
-      centerTitle: true ,
-      actions: [
-        Consumer(
-          builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
-              child: AnimatedConditional(
-                  state: prov.watch(providerListenable).boolean  ,
-                  first: InkWell(
-                      onTap: () {
-                        prov.read(providerListenable).switchBoolean();
-                      },
-                      child: const Text("RTL")) ,
-                  second: InkWell(
-                      onTap: () {
-                        prov.read(providerListenable).switchBoolean();
-                      },
-                      child: const Text("LTR"))
-              )
-              // child: AnimatedCrossFade(
-              //     condition: prov.watch(providerListenable).boolean ,
-              //     builder: (BuildContext buildContext){
-              //       return InkWell(
-              //           onTap: () {
-              //             prov.read(providerListenable).switchBoolean();
-              //           } ,
-              //           child: const Text("RTL"));
-              //     } ,
-              //     fallback: (BuildContext buildContext){
-              //       return InkWell(
-              //           onTap: () {
-              //             prov.read(providerListenable).switchBoolean();
-              //           },
-              //           child: const Text("LTR"));
-              //     } ,
-              // ),
-            );
-          }
-        )
-      ],
-    );
-  }
-
-
-  /// Floating Action Button
-   Widget _floatingActionButton({required VoidCallback onPress}) {
-    return App.globalWidgets.globalFloatingActionButton(
-        onPress: onPress ,
-        child: const Icon(Icons.add)
-        );
-  }
-
-
-  /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
-  Consumer _titleTextField({
-    required TextEditingController titleController ,
-    required ProviderListenable<ProviderState> providerListenable ,
-  }) {
-    return Consumer(
-      builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalWidgets.globalTextField(
-            hintText: "Title" ,
-            maxLine: 1 ,
-            suffixIcon: IconButton(onPressed: (){
-              prov.read(providerListenable).switchBoolean();
-            }, icon: Icon(Icons.cached , color: App.color.darkMainColor,)),
-            textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,
-            textInputAction: TextInputAction.next ,
-            controller: titleController
-        );
-      }
-    );
-  }
-
-
-  /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
-  Consumer _contentTextField({
-    required TextEditingController contentController ,
-    required ProviderListenable<ProviderState> providerListenable
-  }) {
-    return Consumer(
-      builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-        return App.globalWidgets.globalTextField(
-            hintText: "Content" ,
-            maxLine: 999999999 ,
-            textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,
-            textInputAction: TextInputAction.unspecified ,
-            controller: contentController
-        );
-      }
-    );
-  }
-
-}
+//
+// class _MobileCrateTodoWidgets {
+//
+//   /// Appbar
+//   AppBar _appBar({required ProviderListenable<BooleanState> providerListenable , required BuildContext context}) {
+//     return AppBar(
+//       title: CustomText(
+//         text: "${context.lang!.translate(LangEnum.createScreen.name)}",
+//         //text: "${Controller.global.translate(context: context, name: 'createScreen')}" ,
+//           fontSize: 20.0) ,
+//       //title: CustomText(text: App.strings.appbarCreateScreen , fontSize: 20.0) ,
+//       centerTitle: true ,
+//       actions: [
+//         Consumer(
+//           builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+//             return Padding(
+//               padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
+//               child: AnimatedConditional(
+//                   state: prov.watch(providerListenable).boolean  ,
+//                   first: InkWell(
+//                       onTap: () {
+//                         prov.read(providerListenable).switchBoolean();
+//                       },
+//                       child: const Text("RTL")) ,
+//                   second: InkWell(
+//                       onTap: () {
+//                         prov.read(providerListenable).switchBoolean();
+//                       },
+//                       child: const Text("LTR"))
+//               )
+//               // child: AnimatedCrossFade(
+//               //     condition: prov.watch(providerListenable).boolean ,
+//               //     builder: (BuildContext buildContext){
+//               //       return InkWell(
+//               //           onTap: () {
+//               //             prov.read(providerListenable).switchBoolean();
+//               //           } ,
+//               //           child: const Text("RTL"));
+//               //     } ,
+//               //     fallback: (BuildContext buildContext){
+//               //       return InkWell(
+//               //           onTap: () {
+//               //             prov.read(providerListenable).switchBoolean();
+//               //           },
+//               //           child: const Text("LTR"));
+//               //     } ,
+//               // ),
+//             );
+//           }
+//         )
+//       ],
+//     );
+//   }
+//
+//
+//   /// Floating Action Button
+//    Widget _floatingActionButton({required VoidCallback onPress}) {
+//     return App.globalWidgets.globalFloatingActionButton(
+//         onPress: onPress ,
+//         child: const Icon(Icons.add)
+//         );
+//   }
+//
+//
+//   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
+//   Consumer _titleTextField({
+//     required TextEditingController titleController ,
+//     required ProviderListenable<BooleanState> providerListenable ,
+//   }) {
+//     return Consumer(
+//       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+//         return App.globalWidgets.globalTextField(
+//             hintText: "Title" ,
+//             maxLine: 1 ,
+//             suffixIcon: IconButton(onPressed: (){
+//               prov.read(providerListenable).switchBoolean();
+//             }, icon: Icon(Icons.cached , color: App.color.darkMainColor,)),
+//             textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,
+//             textInputAction: TextInputAction.next ,
+//             controller: titleController
+//         );
+//       }
+//     );
+//   }
+//
+//
+//   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
+//   Consumer _contentTextField({
+//     required TextEditingController contentController ,
+//     required ProviderListenable<BooleanState> providerListenable
+//   }) {
+//     return Consumer(
+//       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
+//         return App.globalWidgets.globalTextField(
+//             hintText: "Content" ,
+//             maxLine: 999999999 ,
+//             textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,
+//             textInputAction: TextInputAction.unspecified ,
+//             controller: contentController
+//         );
+//       }
+//     );
+//   }
+//
+// }

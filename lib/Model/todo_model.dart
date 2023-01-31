@@ -1,4 +1,4 @@
-import 'package:todo_app/Core/Utils/enums.dart';
+import 'package:todo_app/Core/Utils/general.dart';
 
 
 class BaseTodoModel {
@@ -17,15 +17,12 @@ class BaseTodoModel {
 
 class TodoModel extends BaseTodoModel {
   TodoModel({
-
     required super.title ,
     required super.content ,
     required super.date ,
     required super.checkTitleDirection ,
     required super.checkContentDirection
   });
-
-
 
   factory TodoModel.fromJson(Map<String , dynamic>json) {
     return TodoModel(

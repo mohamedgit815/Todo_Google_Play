@@ -15,7 +15,7 @@ class RegularExpression {
 
 //final RegExp regExpName = RegExp('[a-zA-Z]');
   final RegExp conditionEegExp = RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]');
-  final RegExp numberRegExp = RegExp(r'\d');
+  final RegExp numberRegExp = RegExp(r'\=d');
   final RegExp langEnRegExp = RegExp('[a-zA-Z]');
   final RegExp langEnArRegExp = RegExp('[a-zA-Zء-ي]');
   final RegExp langArRegExp = RegExp('[ء-ي]');

@@ -3,9 +3,40 @@ import 'package:todo_app/Core/GlobalWidget/global_alert_dialog.dart';
 import 'package:todo_app/Core/GlobalWidget/global_floating_action_button.dart';
 import 'package:todo_app/Core/GlobalWidget/global_text_field.dart';
 
-class GlobalWidgets {
+
+abstract class BaseGlobalWidgets {
   /// Function App for Global Widgets
   // Global AlertDialog
+  GlobalAlertDialog globalAlertDialog({
+    required String title ,
+    required VoidCallback onPressForNo ,
+    required VoidCallback onPressForYes
+  });
+
+  // GlobalTextField
+  GlobalTextField globalTextField({
+    required String hintText ,
+    required int maxLine ,
+    required TextInputAction textInputAction ,
+    required TextEditingController controller ,
+    ValueChanged<String>? onChange ,
+    ValueChanged<String>? onSubmitted ,
+    TextDirection? textDirection ,
+    Widget? suffixIcon
+  });
+
+  // Global Floating Action Button
+  GlobalFloatingActionButton globalFloatingActionButton({
+    required VoidCallback onPress , required Widget child , ValueKey? key
+  });
+}
+
+
+
+class GlobalWidgets extends BaseGlobalWidgets {
+  /// Function App for Global Widgets
+
+  @override
   GlobalAlertDialog globalAlertDialog({
     required String title ,
     required VoidCallback onPressForNo ,
@@ -21,6 +52,7 @@ class GlobalWidgets {
 
 
   // GlobalTextField
+  @override
   GlobalTextField globalTextField({
     required String hintText ,
     required int maxLine ,
@@ -45,11 +77,13 @@ class GlobalWidgets {
 
 
 
-  // Global Floating Action Button
-   GlobalFloatingActionButton globalFloatingActionButton({
+   @override
+  GlobalFloatingActionButton globalFloatingActionButton({
     required VoidCallback onPress , required Widget child , ValueKey? key
-  }){
+  }) {
     return GlobalFloatingActionButton(onPress: onPress , valueKey: key , child: child);
   }
+
+
 
 }

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/Core/app.dart';
 
-class AppThemes {
+abstract class BaseAppThemes {
+  ThemeData darkThemeData();
+}
+
+class AppThemes extends BaseAppThemes {
+
+  @override
   ThemeData darkThemeData() {
     return ThemeData.dark().copyWith(
       brightness: Brightness.dark ,

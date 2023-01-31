@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Core/Utils/custom_widgets.dart';
+import 'package:todo_app/Core/Utils/general.dart';
+
 
 class GlobalAlertDialog extends StatelessWidget {
   final VoidCallback onPressForNo , onPressForYes;

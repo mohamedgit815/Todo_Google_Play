@@ -5,7 +5,7 @@ import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/mobile_update_todo_page.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/ProviderState/provider_state.dart';
+import 'package:todo_app/Core/Utils/provider_state.dart';
 
 
 
@@ -107,7 +107,7 @@ with _MainUpdateTodo {
           return await showDialog(
               context: context,
               builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
-                  title: App.strings.languages.deleteDialog ,
+                  title: App.strings.deleteDialog ,
                   onPressForNo: () {
                     /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
                     Controller.navigator.navigatorHomeScreen(context);
@@ -133,7 +133,7 @@ with _MainUpdateTodo {
           return await showDialog(
               context: context,
               builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
-                  title: App.strings.languages.saveDialog ,
+                  title: App.strings.saveDialog ,
                   onPressForNo: () async {
                     /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
                     Controller.navigator.navigatorHomeScreen(context);
@@ -175,9 +175,10 @@ with _MainUpdateTodo {
               provUpdateContentDirection: provUpdateContentDirection
           ) ,
 
+          tablet: null ,
 
           deskTop: null ,
-          tablet: null ,
+
         ),
       ),
     );
@@ -186,9 +187,9 @@ with _MainUpdateTodo {
 
 class _MainUpdateTodo {
   /// Variable
-  final provUpdateTitleDirection = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
-  final provUpdateContentDirection = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
+  final provUpdateTitleDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+  final provUpdateContentDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
-  late DBHelperController dbHelperController;
+  late BaseDBHelperController dbHelperController;
 }

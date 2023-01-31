@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/ProviderState/provider_state.dart';
-import 'package:todo_app/Core/Utils/custom_widgets.dart';
+import 'package:todo_app/Core/Utils/provider_state.dart';
+import 'package:todo_app/Core/Utils/general.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
+import 'package:todo_app/View/widgets.dart';
+
 
 
 class MobileHomeTodoPage extends ConsumerStatefulWidget {
-  final DBHelperController dbHelperController;
-  final ProviderListenable<ProviderState> notificationProv;
+  final BaseDBHelperController dbHelperController;
+  final ProviderListenable<BooleanState> notificationProv;
 
   const MobileHomeTodoPage({
     Key? key ,
@@ -23,14 +25,13 @@ class MobileHomeTodoPage extends ConsumerStatefulWidget {
 }
 
 
-class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
-    with _MobileHomeTodoWidgets {
+class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage> {
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: _mobileFloatingActionButton(
+        floatingActionButton: Widgets.homeMobile.mobileFloatingActionButton(
             providerListenable: widget.notificationProv ,
             onPress: () async {
               /// HomeTodoController navigateToCreateTodoScreen
@@ -41,7 +42,7 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext buildContext , inner) => [
               /// SliverAppBar
-              _mobileSliverAppBar() ,
+              Widgets.homeMobile.mobileSliverAppBar(context) ,
             ],
 
 
@@ -63,22 +64,22 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                       return const Center(child: CustomText(text: "No Items" , fontSize: 25.0,));
                     } else {
                       return ListView.separated(
-                          key: PageStorageKey<String>(App.strings.constance.pageStorageKeyHome) ,
+                          key: PageStorageKey<String>(ConstEnum.pageStorageKeyHome.name) ,
                           physics: const BouncingScrollPhysics() ,
                           itemCount: snapshot.data!.length ,
                           separatorBuilder: (BuildContext buildContext , int i ) => const Divider(thickness: 2,) ,
                           itemBuilder: (BuildContext buildContext , int i) {
                             final BaseTodoModel model = TodoModel.fromJson(snapshot.data!.elementAt(i));
-                            final int id = snapshot.data!.elementAt(i)[App.strings.constance.constId];
+                            final int id = snapshot.data!.elementAt(i)[ModelEnum.id.name];
                             return ListTile(
-                              key: ValueKey<String>(snapshot.data!.elementAt(i)[App.strings.constance.constId].toString()),
-                              title: CustomText(text: model.title.isEmpty ? "${snapshot.data!.elementAt(i)['id']}" : model.title ) ,
+                              key: ValueKey<String>(snapshot.data!.elementAt(i)[ModelEnum.id.name].toString()),
+                              title: CustomText(text: model.title.isEmpty ? "${snapshot.data!.elementAt(i)[ModelEnum.id.name]}" : model.title ) ,
                               subtitle: CustomText(text: model.content ) ,
                               trailing: IconButton(onPressed: () async {
                                 return await showDialog(
                                     context: context,
                                     builder: (BuildContext b)=>App.globalWidgets.globalAlertDialog(
-                                        title: App.strings.languages.sureDialog,
+                                        title: App.strings.sureDialog,
                                         onPressForNo: () {
                                           Controller.navigator.backOneScreen(context);
                                         },
@@ -124,38 +125,40 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
 
 }
 
-
-class _MobileHomeTodoWidgets {
-
-  /// SliverAppBar
-  SliverAppBar _mobileSliverAppBar() {
-    return SliverAppBar(
-
-      title: CustomText(text: App.strings.languages.appbarHomeScreen , fontSize: 20.0,) ,
-      centerTitle: true ,
-      floating: true ,
-      snap: true ,
-      //pinned: true ,
-    );
-  }
-
-
-  /// MobileFloatingActionButton
-  Consumer _mobileFloatingActionButton({
-    required ProviderListenable<ProviderState> providerListenable ,
-    required VoidCallback onPress
-  }) {
-    return Consumer(
-        builder: (context , prov , _) {
-          return Visibility(
-            visible: !prov.watch(providerListenable).boolean ? false : true ,
-            child: App.globalWidgets.globalFloatingActionButton(
-                onPress: onPress ,
-                child: const Icon(Icons.add)
-            ),
-          );
-        }
-    );
-  }
-
-}
+//
+// class _MobileHomeTodoWidgets implements Testing {
+//
+//   /// SliverAppBar
+//   SliverAppBar _mobileSliverAppBar(BuildContext context) {
+//     return SliverAppBar(
+//       title: CustomText(
+//           fontSize: 20.0,
+//           text: "${context.lang!.translate(LangEnum.homeScreen.name)}"),
+//       //text: "${Controller.global.translate(context: context, name: 'createScreen')}" ,
+//       centerTitle: true ,
+//       floating: true ,
+//       snap: true ,
+//       //pinned: true ,
+//     );
+//   }
+//
+//
+//   /// MobileFloatingActionButton
+//   Consumer _mobileFloatingActionButton({
+//     required ProviderListenable<BooleanState> providerListenable ,
+//     required VoidCallback onPress
+//   }) {
+//     return Consumer(
+//         builder: (context , prov , _) {
+//           return Visibility(
+//             visible: !prov.watch(providerListenable).boolean ? false : true ,
+//             child: App.globalWidgets.globalFloatingActionButton(
+//                 onPress: onPress ,
+//                 child: const Icon(Icons.add)
+//             ),
+//           );
+//         }
+//     );
+//   }
+//
+// }

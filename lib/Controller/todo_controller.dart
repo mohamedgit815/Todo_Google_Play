@@ -4,10 +4,34 @@ import 'package:todo_app/Core/Utils/route_builder.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
-
-class TodoController {
-
+abstract class BaseTodoController {
   /// To Create Item for Todo
+  Future<void> createTodoController({
+    required BuildContext context ,
+    required String title , required String content ,
+    required int checkTitleDirection ,
+    required int checkContentDirection
+  });
+
+  /// To Delete Item for Todo
+  Future<void> deleteTodoController({
+    required int id , required BuildContext context
+  });
+
+  /// To Update Item for Todo
+  Future<void> updateTodoController({
+    required int id , required BuildContext context ,
+    required String title , required String content ,
+    required int checkTitleDirection ,
+    required int checkContentDirection
+  });
+
+}
+
+
+class TodoController implements BaseTodoController {
+
+  @override
   Future<void> createTodoController({
     required BuildContext context ,
     required String title , required String content ,
@@ -20,7 +44,7 @@ class TodoController {
     );
     if(title.isEmpty && content.isEmpty) {
       App.alertWidgets.customSnackBar(
-          text: App.strings.languages.createScreenError ,
+          text: App.strings.createScreenError ,
           context: context);
       return;
     }
@@ -28,7 +52,7 @@ class TodoController {
       await Controller.dbHelper.createTodo(model);
       App.navigator.pushNamedAndRemoveRouter(route: RouteGenerators.homeScreen, context: context);
     } catch (e){
-      App.alertWidgets.customSnackBar(text: App.strings.languages.createScreenError , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.createScreenError , context: context);
     }
 
     //return await dbHelperController.createTodo(model);
@@ -41,19 +65,21 @@ class TodoController {
   }
 
 
-  /// To Delete Item for Todo
+
+  @override
   Future<void> deleteTodoController({
     required int id , required BuildContext context
   }) async {
     await  Controller.dbHelper.deleteTodo(id).then((value) {
-      App.alertWidgets.customSnackBar(text: App.strings.languages.homeScreenDeleted , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.homeScreenDeleted , context: context);
     }).catchError((err){
       App.alertWidgets.customSnackBar(text: err.toString() , context: context);
     });
   }
 
 
-  /// To Update Item for Todo
+
+  @override
   Future<void> updateTodoController({
     required int id , required BuildContext context ,
     required String title , required String content ,
@@ -66,14 +92,14 @@ class TodoController {
         checkTitleDirection:  checkTitleDirection , checkContentDirection: checkContentDirection
     );
     if(title.isEmpty && content.isEmpty) {
-      App.alertWidgets.customSnackBar(text: App.strings.languages.updateError , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.updateError , context: context);
       return;
     }
     try {
       await Controller.dbHelper.updateTodo(todoModel: model , id: id );
       App.navigator.pushNamedAndRemoveRouter(route: RouteGenerators.homeScreen, context: context);
     } catch (e){
-      App.alertWidgets.customSnackBar(text: App.strings.languages.updateError , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.updateError , context: context);
     }
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/Core/Utils/localization.dart';
+
+
 /// Enums
 enum ModelEnum {
 
@@ -37,9 +39,12 @@ enum RestorationEnum {
 
 enum LangEnum {
   ar , en , es ,
+  /// Appbar
   createScreen ,
   homeScreen ,
+  updateScreen
 }
+
 
 /// Extension For BuildContext
 extension MainContext on BuildContext {
@@ -136,6 +141,7 @@ class CustomText extends StatelessWidget {
 }
 
 
+/// Animated Text
 class AnimatedText extends StatelessWidget {
   final String text;
   final int? maxLine;

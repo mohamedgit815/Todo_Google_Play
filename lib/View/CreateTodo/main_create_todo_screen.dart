@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/Controller/controller.dart';
+import 'package:todo_app/Core/Utils/general.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/View/CreateTodo/mobile_create_todo_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/ProviderState/provider_state.dart';
+import 'package:todo_app/Core/Utils/provider_state.dart';
 
 
 class MainCreateTodoScreen extends ConsumerStatefulWidget {
@@ -34,12 +35,12 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
 
   @override
   // TODO: implement restorationId
-  String? get restorationId => App.strings.constance.createTodoRestoration;
+  String? get restorationId => RestorationEnum.createTodoRestoration.name;
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(titleController, App.strings.constance.createTitleRestorationId);
-    registerForRestoration(contentController, App.strings.constance.createContentRestorationId);
+    registerForRestoration(titleController, RestorationEnum.createTitleRestorationId.name);
+    registerForRestoration(contentController, RestorationEnum.createContentRestorationId.name);
   }
 
 
@@ -53,7 +54,7 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
           /// AlertDialog for WillPopScope
           return await showDialog(context: context , builder: (BuildContext buildContext) {
             return App.globalWidgets.globalAlertDialog(
-                title: App.strings.languages.saveDialog ,
+                title: App.strings.saveDialog ,
                 onPressForNo: ()  {
                   Controller.navigator.navigatorHomeScreen(context);
                 } ,
@@ -102,9 +103,9 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
 
 /// Variables
 class _MainCreateTodo {
-  final ProviderListenable<ProviderState> provTitleDirection = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
-  final ProviderListenable<ProviderState> provContentDirection = ChangeNotifierProvider<ProviderState>((ref) => ProviderState());
+  final ProviderListenable<BooleanState> provTitleDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+  final ProviderListenable<BooleanState> provContentDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
   final RestorableTextEditingController titleController = RestorableTextEditingController();
   final RestorableTextEditingController contentController = RestorableTextEditingController();
-  late DBHelperController dbHelperController;
+  late BaseDBHelperController dbHelperController;
 }

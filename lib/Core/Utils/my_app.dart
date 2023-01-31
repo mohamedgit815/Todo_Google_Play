@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Core/Utils/route_builder.dart';
 import 'package:todo_app/Core/app.dart';
 
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context , WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false ,
       title: 'Todo App' ,
@@ -22,14 +24,43 @@ class MyApp extends StatelessWidget {
 
       darkTheme: App.theme.darkThemeData() ,
 
-      initialRoute: RouteGenerators.homeScreen
+      initialRoute: RouteGenerators.homeScreen ,
 
-      //home: const MainHomeTodoScreen(),
+      //locale: Controller.global.switchLang(ref.watch(App.variable.langProvider).lang),
 
-      //initialRoute: RouteGenerators.createScreen ,
-      //initialRoute: RouteGenerators.homeScreen ,
+      locale: const Locale("en") ,
 
-      //home: const MainHomeTodoScreen()
+      // supportedLocales: const [
+      //   Locale("en","")  ,
+      //   Locale("ar","") ,
+      //   Locale('es','')
+      // ] ,
+
+      supportedLocales: Controller.localization.supportedLocales() ,
+
+      // localizationsDelegates: const [
+      //   AppLocalization.delegate ,
+      //   GlobalWidgetsLocalizations.delegate ,
+      //   GlobalMaterialLocalizations.delegate ,
+      //   GlobalCupertinoLocalizations.delegate
+      // ],
+
+      localizationsDelegates: Controller.localization.localizationsDelegates(),
+
+      // localeResolutionCallback: ( currentLocal , supportedLocal ) {
+      //   if( currentLocal != null ) {
+      //     for( Locale loopLocal in supportedLocal ) {
+      //       if( currentLocal.languageCode == loopLocal.languageCode ){
+      //         return currentLocal;
+      //       }
+      //     }
+      //   }
+      //   return supportedLocal.first ;
+      // },
+
+      localeResolutionCallback: (Locale? currentLocal ,Iterable<Locale> supportedLocal){
+        return Controller.localization.localeResolutionCallback(currentLocal, supportedLocal);
+      },
     );
   }
 }
