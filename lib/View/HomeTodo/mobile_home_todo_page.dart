@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
 import 'package:todo_app/Core/Utils/general.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
-import 'package:todo_app/View/widgets.dart';
+import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
+import 'package:todo_app/View/HomeTodo/mobile_home_todo_widgets.dart';
 
 
 
 class MobileHomeTodoPage extends ConsumerStatefulWidget {
-  final BaseDBHelperController dbHelperController;
-  final ProviderListenable<BooleanState> notificationProv;
+  // final BaseDBHelperController dbHelperController;
+  // final ProviderListenable<BooleanState> notificationProv;
+  final InitHomeTodo home;
 
   const MobileHomeTodoPage({
     Key? key ,
-    required this.dbHelperController ,
-    required this.notificationProv
+    required this.home ,
+    // required this.dbHelperController ,
+    // required this.notificationProv
   }) : super(key: key);
 
   @override
@@ -25,14 +26,15 @@ class MobileHomeTodoPage extends ConsumerStatefulWidget {
 }
 
 
-class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage> {
+class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
+ with MobileHomeTodoWidgets {
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: Widgets.homeMobile.mobileFloatingActionButton(
-            providerListenable: widget.notificationProv ,
+        floatingActionButton: mobileFloatingActionButton(
+            providerListenable: widget.home.main.notificationProv ,
             onPress: () async {
               /// HomeTodoController navigateToCreateTodoScreen
               Controller.navigator.navigateToCreateTodoScreen(context);
@@ -42,13 +44,13 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage> {
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext buildContext , inner) => [
               /// SliverAppBar
-              Widgets.homeMobile.mobileSliverAppBar(context) ,
+              mobileSliverAppBar(context) ,
             ],
 
 
             /// To Show User Data Builder
             body: FutureBuilder(
-                future: widget.dbHelperController.fetchAllTodo() ,
+                future: widget.home.main.dbHelperController.fetchAllTodo() ,
                 builder: (BuildContext buildContext , AsyncSnapshot<List<Map<String,dynamic>>> snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting){
 
@@ -64,7 +66,7 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage> {
                       return const Center(child: CustomText(text: "No Items" , fontSize: 25.0,));
                     } else {
                       return ListView.separated(
-                          key: PageStorageKey<String>(ConstEnum.pageStorageKeyHome.name) ,
+                          key: PageStorageKey<String>(StorageKeyEnum.pageStorageKeyHome.name) ,
                           physics: const BouncingScrollPhysics() ,
                           itemCount: snapshot.data!.length ,
                           separatorBuilder: (BuildContext buildContext , int i ) => const Divider(thickness: 2,) ,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
 class AppLocalization {
   final Locale locale;
 
@@ -40,7 +41,7 @@ class AppLocalization {
 }
 
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalization>{
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalization> {
 
   const _AppLocalizationsDelegate();
 
@@ -50,7 +51,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalization>{
   }
 
   @override
-  Future<AppLocalization> load(Locale locale) async{
+  Future<AppLocalization> load(Locale locale) async {
     AppLocalization localization = AppLocalization(locale);
     await localization.loadLang();
     return localization;

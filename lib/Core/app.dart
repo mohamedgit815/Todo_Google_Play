@@ -1,14 +1,14 @@
-import 'package:todo_app/Core/Utils/alerts.dart';
+import 'package:todo_app/Core/Utils/alerts_widgets.dart';
 import 'package:todo_app/Core/Utils/app_colors.dart';
 import 'package:todo_app/Core/Utils/app_strings.dart';
 import 'package:todo_app/Core/Utils/app_themes.dart';
+import 'package:todo_app/Core/Utils/buttons_widgets.dart';
 import 'package:todo_app/Core/Utils/global_variable.dart';
 import 'package:todo_app/Core/Utils/global_widgets.dart';
 import 'package:todo_app/Core/Utils/navigator.dart';
 import 'package:todo_app/Core/Utils/packages_widgets.dart';
 import 'package:todo_app/Core/Utils/regular_expressions.dart';
-
-
+import 'package:todo_app/Core/Utils/text_widgets.dart';
 
 class App {
   static final AppStrings strings = AppStrings(); /// AppStrings
@@ -23,5 +23,7 @@ class App {
   static final BaseAlertWidgets alertWidgets = AlertWidgets(); /// AlertWidgets
   static final BasePackagesWidgets packageWidgets = PackagesWidgets(); /// Packages Widgets
   static final BaseGlobalWidgets globalWidgets = GlobalWidgets(); /// GlobalWidgets
+  static final BaseButtonsWidgets buttons = ButtonsWidgets(); /// Every Buttons
+  static final BaseTextWidgets text = TextWidget(); /// Every Text Widgets
 }
 

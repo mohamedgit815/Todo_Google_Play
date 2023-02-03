@@ -20,11 +20,8 @@ enum PreferencesEnum {
   preferencesLang ,
 }
 
-enum ConstEnum {
-
-
-  /// PageStorageKey
-  pageStorageKeyHome ,
+enum StorageKeyEnum {
+  pageStorageKeyHome
 }
 
 enum RestorationEnum {
@@ -151,6 +148,7 @@ class AnimatedText extends StatelessWidget {
   final FontWeight? fontWeight;
   final Color? color;
   final TextDecoration? decoration;
+
   const AnimatedText({Key? key,this.decoration,required this.text, this.maxLine, this.style, this.overflow, this.fontSize, this.fontWeight, this.color,}) : super(key: key);
 
   @override

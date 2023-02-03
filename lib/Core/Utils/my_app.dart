@@ -28,6 +28,7 @@ class MyApp extends ConsumerWidget {
 
       //locale: Controller.global.switchLang(ref.watch(App.variable.langProvider).lang),
 
+      /// Localization
       locale: const Locale("en") ,
 
       // supportedLocales: const [

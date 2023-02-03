@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:todo_app/Core/Utils/general.dart';
 
 
-class BaseTodoModel {
+class BaseTodoModel extends Equatable {
   final String title , content , date;
   final int checkTitleDirection , checkContentDirection;
 
@@ -12,11 +13,20 @@ class BaseTodoModel {
     required this.checkTitleDirection ,
     required this.checkContentDirection
   });
+
+  @override
+  List<Object?> get props => [
+    title ,
+    date ,
+    content ,
+    checkTitleDirection ,
+    checkContentDirection
+  ];
 }
 
 
 class TodoModel extends BaseTodoModel {
-  TodoModel({
+  const TodoModel({
     required super.title ,
     required super.content ,
     required super.date ,

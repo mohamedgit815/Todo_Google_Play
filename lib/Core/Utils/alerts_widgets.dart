@@ -30,8 +30,6 @@ abstract class BaseAlertWidgets {
 }
 
 
-
-
 class AlertWidgets implements BaseAlertWidgets {
   @override
   ScaffoldMessengerState customSnackBar({

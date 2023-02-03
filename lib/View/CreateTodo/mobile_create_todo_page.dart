@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
-import 'package:todo_app/View/widgets.dart';
+import 'package:todo_app/View/CreateTodo/init_create.dart';
+import 'package:todo_app/View/CreateTodo/main_create_todo_state.dart';
+import 'package:todo_app/View/CreateTodo/mobile_create_todo_widgets.dart';
 
 
 
 class MobileCreateTodoPage extends ConsumerStatefulWidget {
+  final InitCreateTodo create;
   final TextEditingController titleController , contentController;
-  final BaseDBHelperController dbHelperController;
-  final ProviderListenable<BooleanState> provTitleDirection , provContentDirection;
 
   const MobileCreateTodoPage({
     Key? key ,
+    required this.create ,
     required this.titleController ,
     required this.contentController ,
-    required this.dbHelperController ,
-    required this.provTitleDirection ,
-    required this.provContentDirection
   }) : super(key: key);
 
   @override
@@ -26,26 +23,39 @@ class MobileCreateTodoPage extends ConsumerStatefulWidget {
 }
 
 
-class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage> {
+class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage>
+with MobileCrateTodoWidgets {
+
+  late final BaseMainCreateTodoState _create ;
+
+  @override
+  void initState() {
+    super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //
+    // });
+    _create = widget.create.main;
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       /// _MobileCreateTodoWidgets for FloatingActionButton
-      floatingActionButton: Widgets.createTodoMobile.floatingActionButton(
+      floatingActionButton: floatingActionButton(
           onPress: () async {
              await Controller.todo.createTodoController(
               context: context ,
               title: widget.titleController.text ,
               content: widget.contentController.text ,
-               checkTitleDirection: ref.read(widget.provTitleDirection).boolean ? 0 : 1 ,
-               checkContentDirection: ref.read(widget.provContentDirection).boolean ? 0 : 1 ,
+               checkTitleDirection: ref.read(_create.provTitleDirection).boolean ? 0 : 1 ,
+               checkContentDirection: ref.read(_create.provContentDirection).boolean ? 0 : 1 ,
              );
           }
       ) ,
 
       /// _MobileCreateTodoWidgets for AppBar
-      appBar: Widgets.createTodoMobile.appBar(providerListenable: widget.provContentDirection,context: context) ,
+      appBar: appBar(providerListenable: _create.provContentDirection,context: context) ,
 
 
       body: LayoutBuilder(
@@ -54,17 +64,17 @@ class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage> {
             children: [
 
               /// _MobileCreateTodoWidgets for _titleTextField
-              Widgets.createTodoMobile.titleTextField( /// CreateTodoController
-                  providerListenable: widget.provTitleDirection ,
+              titleTextField( /// CreateTodoController
+                  providerListenable: _create.provTitleDirection ,
                   titleController: widget.titleController
               ) ,
 
 
               /// _MobileCreateTodoWidgets for _contentTextField
               Expanded(
-                  child: Widgets.createTodoMobile.contentTextField( /// CreateTodoController
+                  child: contentTextField( /// CreateTodoController
                       contentController: widget.contentController,
-                      providerListenable: widget.provContentDirection
+                      providerListenable: _create.provContentDirection
                   )
               ) ,
 
@@ -138,7 +148,7 @@ class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage> {
 //
 //   /// Floating Action Button
 //    Widget _floatingActionButton({required VoidCallback onPress}) {
-//     return App.globalWidgets.globalFloatingActionButton(
+//     return App.globalglobalFloatingActionButton(
 //         onPress: onPress ,
 //         child: const Icon(Icons.add)
 //         );
@@ -152,7 +162,7 @@ class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage> {
 //   }) {
 //     return Consumer(
 //       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-//         return App.globalWidgets.globalTextField(
+//         return App.globalglobalTextField(
 //             hintText: "Title" ,
 //             maxLine: 1 ,
 //             suffixIcon: IconButton(onPressed: (){
@@ -174,7 +184,7 @@ class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage> {
 //   }) {
 //     return Consumer(
 //       builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-//         return App.globalWidgets.globalTextField(
+//         return App.globalglobalTextField(
 //             hintText: "Content" ,
 //             maxLine: 999999999 ,
 //             textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,

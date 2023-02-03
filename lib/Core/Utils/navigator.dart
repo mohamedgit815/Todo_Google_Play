@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/Core/app.dart';
 
 abstract class BaseAppNavigator {
-  late final GlobalKey<NavigatorState> navigatorKey ;
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 
   Future<dynamic> backPageRouter({required BuildContext context, dynamic arguments});
@@ -20,10 +20,9 @@ abstract class BaseAppNavigator {
 
 class AppNavigator implements BaseAppNavigator {
 
-  @override
-  GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+   @override
+   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  
   @override
   Future<dynamic> backPageRouter({required BuildContext context, dynamic arguments}) async {
     return await navigatorKey.currentState!.maybePop(arguments);
@@ -46,6 +45,8 @@ class AppNavigator implements BaseAppNavigator {
   String pushNamedAndRemoveRouter({required String route ,required BuildContext context,dynamic arguments}) {
     return navigatorKey.currentState!.restorablePushNamedAndRemoveUntil(route , (route) => false,arguments: arguments);
   }
+
+
 
 
 }

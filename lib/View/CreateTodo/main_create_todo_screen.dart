@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Core/Utils/general.dart';
 import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/View/CreateTodo/init_create.dart';
+import 'package:todo_app/View/CreateTodo/main_create_todo_state.dart';
 import 'package:todo_app/View/CreateTodo/mobile_create_todo_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
 
 
 class MainCreateTodoScreen extends ConsumerStatefulWidget {
@@ -18,12 +18,15 @@ class MainCreateTodoScreen extends ConsumerStatefulWidget {
 
 
 class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
-    with _MainCreateTodo , RestorationMixin {
+    with MainCreateTodoState , RestorationMixin {
+
+  late final InitCreateTodo create;
 
   @override
   void initState() {
     super.initState();
-    dbHelperController = Controller.dbHelper;
+    create = InitCreateTodo();
+    create.main.dbHelperController = Controller.dbHelper;
   }
 
   @override
@@ -85,11 +88,9 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
 
         child: App.packageWidgets.responsiveBuilderScreen(
           mobile: MobileCreateTodoPage(
+            create: create ,
               titleController: titleController.value ,
               contentController: contentController.value ,
-              dbHelperController: dbHelperController ,
-              provTitleDirection: provTitleDirection ,
-              provContentDirection: provContentDirection
           ) ,
           deskTop: null ,
           tablet: null ,
@@ -101,11 +102,3 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
 }
 
 
-/// Variables
-class _MainCreateTodo {
-  final ProviderListenable<BooleanState> provTitleDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
-  final ProviderListenable<BooleanState> provContentDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
-  final RestorableTextEditingController titleController = RestorableTextEditingController();
-  final RestorableTextEditingController contentController = RestorableTextEditingController();
-  late BaseDBHelperController dbHelperController;
-}

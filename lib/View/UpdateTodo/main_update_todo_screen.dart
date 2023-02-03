@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
+import 'package:todo_app/View/UpdateTodo/init_update.dart';
+import 'package:todo_app/View/UpdateTodo/main_update_todo_state.dart';
 import 'package:todo_app/View/UpdateTodo/mobile_update_todo_page.dart';
-import 'package:todo_app/Controller/db_helper_controller.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
-
 
 
 class MainUpdateTodoScreen extends ConsumerStatefulWidget {
   final int id , checkTitleDirection , checkContentDirection;
   final String title , content , date;
   //final TodoModel model;
+
 
   const MainUpdateTodoScreen({
     Key? key ,
@@ -31,12 +31,18 @@ class MainUpdateTodoScreen extends ConsumerStatefulWidget {
 }
 
 class _MainUpdateTodoScreenState extends ConsumerState<MainUpdateTodoScreen>
-with _MainUpdateTodo {
-  late BaseTodoModel todoModel;
+with MainUpdateTodoState {
+
+  late final BaseTodoModel todoModel;
+  late final InitUpdateTodo update;
+
 
   @override
   void initState() {
     super.initState();
+
+    update = InitUpdateTodo();
+
     todoModel = TodoModel(
         checkTitleDirection: widget.checkTitleDirection ,
         checkContentDirection: widget.checkContentDirection ,
@@ -76,6 +82,7 @@ with _MainUpdateTodo {
     //   contentController.text = widget.todoModel.content;
     //});
   }
+
 
   @override
   void dispose() {
@@ -166,13 +173,14 @@ with _MainUpdateTodo {
 
         child: App.packageWidgets.responsiveBuilderScreen(
           mobile: MobileUpdateTodoPage(
+            update: update ,
               id: widget.id ,
               model: todoModel ,
-              titleController: titleController ,
-              contentController: contentController ,
-              dbHelperController: dbHelperController ,
-              provUpdateTitleDirection: provUpdateTitleDirection ,
-              provUpdateContentDirection: provUpdateContentDirection
+              // titleController: titleController ,
+              // contentController: contentController ,
+              // dbHelperController: dbHelperController ,
+              // provUpdateTitleDirection: provUpdateTitleDirection ,
+              // provUpdateContentDirection: provUpdateContentDirection
           ) ,
 
           tablet: null ,
@@ -183,13 +191,8 @@ with _MainUpdateTodo {
       ),
     );
   }
+
+
 }
 
-class _MainUpdateTodo {
-  /// Variable
-  final provUpdateTitleDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
-  final provUpdateContentDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
-  late BaseDBHelperController dbHelperController;
-}
+

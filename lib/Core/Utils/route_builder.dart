@@ -4,7 +4,6 @@ import 'package:todo_app/View/CreateTodo/main_create_todo_screen.dart';
 import 'package:todo_app/View/HomeTodo/main_home_todo_screen.dart';
 import 'package:todo_app/View/UpdateTodo/main_update_todo_screen.dart';
 
-
 class RouteGenerators {
 
   static const String homeScreen = '/HomeTodoScreen';
@@ -46,6 +45,5 @@ class RouteGenerators {
     }
     return null;
   }
-
 
 }
