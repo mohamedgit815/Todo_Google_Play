@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:todo_app/Core/Utils/general.dart';
+import 'package:todo_app/App/Utils/general.dart';
 
 
 class BaseTodoModel extends Equatable {

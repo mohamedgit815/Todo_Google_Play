@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/init_update.dart';
 import 'package:todo_app/View/UpdateTodo/mobile_update_todo_widgets.dart';
@@ -57,7 +57,7 @@ with MobileUpdateTodoWidgets {
                   builder: (context)=> App.globalWidgets.globalAlertDialog(
                     title: App.strings.deleteDialog,
                   onPressForNo: () async {
-                      return await Controller.navigator.backOneScreen(context);
+                      return await App.navigator.backPageRouter(context: context);
                   },
                   onPressForYes: () async {
                     /// deleteItem used if TextField is Empty  path is: HomeController
@@ -75,7 +75,7 @@ with MobileUpdateTodoWidgets {
                   &&
               widget.model.content == widget.update.main.contentController.text
               ) {
-                return await Controller.navigator.backOneScreen(context);
+                return await App.navigator.backPageRouter(context: context);
               } else {
                 /// updateTodoController used if TextField is not Empty path is: UpdateController
                 return await Controller.todo.updateTodoController(

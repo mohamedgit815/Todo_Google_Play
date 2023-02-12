@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Core/Utils/general.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
-import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/App/Utils/provider_state.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
+
 
 abstract class BaseMobileUpdateTodoWidgets {
   /// Appbar
@@ -41,14 +41,14 @@ class MobileUpdateTodoWidgets implements BaseMobileUpdateTodoWidgets {
     //App.constance.appbarUpdateScreen
     return AppBar(
       key: ValueKey<int>(key),
-      title: CustomText(text: model.date.substring(0,19) , fontSize: 20.0) ,
+      title: App.text.text(text: model.date.substring(0,19) , fontSize: 20.0) ,
       centerTitle: true ,
       actions: [
         Consumer(
             builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
-                child: AnimatedConditional(
+                child: App.text.condition(
                     state: prov.watch(providerListenable).boolean ,
 
                     first: InkWell(

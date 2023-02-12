@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/Utils/route_builder.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/Utils/route_builder.dart';
-import 'package:todo_app/Core/app.dart';
 
 
 class MyApp extends ConsumerWidget {
@@ -32,7 +32,7 @@ class MyApp extends ConsumerWidget {
       locale: const Locale("en") ,
 
       // supportedLocales: const [
-      //   Locale("en","")  ,
+      //   Locale("en","") ,
       //   Locale("ar","") ,
       //   Locale('es','')
       // ] ,

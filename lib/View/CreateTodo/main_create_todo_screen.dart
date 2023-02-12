@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/App/Utils/general.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/Utils/general.dart';
-import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/View/CreateTodo/init_create.dart';
 import 'package:todo_app/View/CreateTodo/main_create_todo_state.dart';
 import 'package:todo_app/View/CreateTodo/mobile_create_todo_page.dart';
@@ -37,7 +37,6 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
   }
 
   @override
-  // TODO: implement restorationId
   String? get restorationId => RestorationEnum.createTodoRestoration.name;
 
   @override
@@ -76,7 +75,7 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
           return true;
         }
 
-      },
+      } ,
 
 
       child: GestureDetector(
@@ -100,5 +99,3 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
 
   }
 }
-
-

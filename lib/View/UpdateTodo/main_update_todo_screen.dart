@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/init_update.dart';
 import 'package:todo_app/View/UpdateTodo/main_update_todo_state.dart';
 import 'package:todo_app/View/UpdateTodo/mobile_update_todo_page.dart';
+
 
 
 class MainUpdateTodoScreen extends ConsumerStatefulWidget {
@@ -43,6 +44,8 @@ with MainUpdateTodoState {
 
     update = InitUpdateTodo();
 
+
+
     todoModel = TodoModel(
         checkTitleDirection: widget.checkTitleDirection ,
         checkContentDirection: widget.checkContentDirection ,
@@ -51,9 +54,9 @@ with MainUpdateTodoState {
         date: widget.date
     );
 
-    dbHelperController = Controller.dbHelper;
-    titleController.text = widget.title; /// To TextField Equal Data from DataBase
-    contentController.text = widget.content; /// To TextField Equal Data from DataBase
+    update.main.dbHelperController = Controller.dbHelper;
+    update.main.titleController.text = widget.title; /// To TextField Equal Data from DataBase
+    update.main.contentController.text = widget.content; /// To TextField Equal Data from DataBase
 
 
     if(widget.checkTitleDirection == 0) {
@@ -108,7 +111,7 @@ with MainUpdateTodoState {
     return WillPopScope(
       onWillPop: () async {
         if(
-        titleController.text.isEmpty && contentController.text.isEmpty
+        update.main.titleController.text.isEmpty && update.main.contentController.text.isEmpty
         ) {
           /// AlertDialog for WillPopScope
           return await showDialog(
@@ -132,9 +135,9 @@ with MainUpdateTodoState {
               )
           );
         } else if (
-        titleController.text.length != widget.title.length
+        update.main.titleController.text.length != widget.title.length
             || /// To Check TextField is empty or no
-            contentController.text.length != widget.content.length
+            update.main.contentController.text.length != widget.content.length
         ) {
           /// AlertDialog for WillPopScope
           return await showDialog(

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
-import 'package:todo_app/Core/Utils/general.dart';
+import 'package:todo_app/App/Utils/general.dart';
+import 'package:todo_app/App/Utils/provider_state.dart';
 
 
 class GlobalVariable  {

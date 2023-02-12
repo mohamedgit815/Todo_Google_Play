@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/App/app.dart';
 
 abstract class BaseAppThemes {
+  /// This is for Dark Theme
   ThemeData darkThemeData();
+
+  /// This is for Light Theme
+  ThemeData lightThemeData();
+
 }
 
 class AppThemes extends BaseAppThemes {
@@ -58,5 +63,11 @@ class AppThemes extends BaseAppThemes {
           foregroundColor: App.color.generalWhite
       )
     );
+  }
+
+  @override
+  ThemeData lightThemeData() {
+    // TODO: implement lightThemeData
+    throw UnimplementedError();
   }
 }

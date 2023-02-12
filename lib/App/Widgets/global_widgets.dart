@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Core/GlobalWidget/global_alert_dialog.dart';
-import 'package:todo_app/Core/GlobalWidget/global_floating_action_button.dart';
-import 'package:todo_app/Core/GlobalWidget/global_text_field.dart';
+import 'package:todo_app/App/GlobalWidget/global_alert_dialog.dart';
+import 'package:todo_app/App/GlobalWidget/global_floating_action_button.dart';
+import 'package:todo_app/App/GlobalWidget/global_text_field.dart';
 
 
 abstract class BaseGlobalWidgets {

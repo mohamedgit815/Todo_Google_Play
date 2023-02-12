@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Core/Utils/route_builder.dart';
-import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/App/Utils/route_builder.dart';
+import 'package:todo_app/App/app.dart';
 
 
 abstract class BaseNavigatorController {
-  /// Back Screen
-  Future<dynamic> backOneScreen(BuildContext context);
-
   /// Navigator To HomeScreen
   String navigatorHomeScreen(BuildContext context);
 
@@ -19,11 +16,6 @@ abstract class BaseNavigatorController {
 
 
 class NavigatorController implements BaseNavigatorController {
-
-  @override
-  Future<dynamic> backOneScreen(BuildContext context) async {
-    return await App.navigator.backPageRouter(context: context);
-  }
 
   @override
   String navigatorHomeScreen(BuildContext context) {

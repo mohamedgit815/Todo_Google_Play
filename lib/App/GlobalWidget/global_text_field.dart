@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/App/app.dart';
 
 
 class GlobalTextField extends StatelessWidget {

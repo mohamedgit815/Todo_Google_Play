@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/App/Utils/provider_state.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
 import 'package:todo_app/View/HomeTodo/main_home_todo_state.dart';
 import 'package:todo_app/View/HomeTodo/mobile_home_todo_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
 
 
 

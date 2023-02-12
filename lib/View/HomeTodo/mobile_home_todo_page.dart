@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/Utils/general.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/Utils/general.dart';
-import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
 import 'package:todo_app/View/HomeTodo/mobile_home_todo_widgets.dart';
@@ -10,15 +10,11 @@ import 'package:todo_app/View/HomeTodo/mobile_home_todo_widgets.dart';
 
 
 class MobileHomeTodoPage extends ConsumerStatefulWidget {
-  // final BaseDBHelperController dbHelperController;
-  // final ProviderListenable<BooleanState> notificationProv;
   final InitHomeTodo home;
 
   const MobileHomeTodoPage({
     Key? key ,
     required this.home ,
-    // required this.dbHelperController ,
-    // required this.notificationProv
   }) : super(key: key);
 
   @override
@@ -63,7 +59,7 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                   } else {
 
                     if(snapshot.data!.isEmpty) {
-                      return const Center(child: CustomText(text: "No Items" , fontSize: 25.0,));
+                      return Center(child: App.text.text(text: "No Items" , fontSize: 25.0,));
                     } else {
                       return ListView.separated(
                           key: PageStorageKey<String>(StorageKeyEnum.pageStorageKeyHome.name) ,
@@ -75,21 +71,21 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                             final int id = snapshot.data!.elementAt(i)[ModelEnum.id.name];
                             return ListTile(
                               key: ValueKey<String>(snapshot.data!.elementAt(i)[ModelEnum.id.name].toString()),
-                              title: CustomText(text: model.title.isEmpty ? "${snapshot.data!.elementAt(i)[ModelEnum.id.name]}" : model.title ) ,
-                              subtitle: CustomText(text: model.content ) ,
+                              title: App.text.text(text: model.title.isEmpty ? "${snapshot.data!.elementAt(i)[ModelEnum.id.name]}" : model.title ) ,
+                              subtitle: App.text.text(text: model.content ) ,
                               trailing: IconButton(onPressed: () async {
                                 return await showDialog(
                                     context: context,
                                     builder: (BuildContext b)=>App.globalWidgets.globalAlertDialog(
                                         title: App.strings.sureDialog,
                                         onPressForNo: () {
-                                          Controller.navigator.backOneScreen(context);
+                                          App.navigator.backPageRouter(context: context);
                                         },
                                         onPressForYes: (){
                                           setState(() {
                                             Controller.todo.deleteTodoController(id: id , context: context);
                                           });
-                                          Controller.navigator.backOneScreen(context);
+                                          App.navigator.backPageRouter(context: context);
                                         }
                                     ));
 
@@ -126,41 +122,3 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
 
 
 }
-
-//
-// class _MobileHomeTodoWidgets implements Testing {
-//
-//   /// SliverAppBar
-//   SliverAppBar _mobileSliverAppBar(BuildContext context) {
-//     return SliverAppBar(
-//       title: CustomText(
-//           fontSize: 20.0,
-//           text: "${context.lang!.translate(LangEnum.homeScreen.name)}"),
-//       //text: "${Controller.global.translate(context: context, name: 'createScreen')}" ,
-//       centerTitle: true ,
-//       floating: true ,
-//       snap: true ,
-//       //pinned: true ,
-//     );
-//   }
-//
-//
-//   /// MobileFloatingActionButton
-//   Consumer _mobileFloatingActionButton({
-//     required ProviderListenable<BooleanState> providerListenable ,
-//     required VoidCallback onPress
-//   }) {
-//     return Consumer(
-//         builder: (context , prov , _) {
-//           return Visibility(
-//             visible: !prov.watch(providerListenable).boolean ? false : true ,
-//             child: App.globalWidgets.globalFloatingActionButton(
-//                 onPress: onPress ,
-//                 child: const Icon(Icons.add)
-//             ),
-//           );
-//         }
-//     );
-//   }
-//
-// }

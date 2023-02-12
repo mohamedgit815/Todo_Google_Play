@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/Core/Utils/localization.dart';
+import 'package:todo_app/App/Utils/app_localization.dart';
 
 
 /// Enums
+enum GeneralEnum {
+  todo
+}
+
+
 enum ModelEnum {
 
   /// Models
@@ -15,14 +20,17 @@ enum ModelEnum {
 
 }
 
+
 enum PreferencesEnum {
   /// Shared Preferences
   preferencesLang ,
 }
 
+
 enum StorageKeyEnum {
   pageStorageKeyHome
 }
+
 
 enum RestorationEnum {
   /// Restoration

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Core/Utils/provider_state.dart';
-import 'package:todo_app/Core/app.dart';
+import 'package:todo_app/App/Utils/provider_state.dart';
+import 'package:todo_app/App/app.dart';
 
 
-abstract class BaseGlobalController {
+abstract class BaseGlobalHelper {
   /// To Hide The Keyboard for Screen
   void unFocusKeyBoard(BuildContext context);
 
@@ -27,7 +27,7 @@ abstract class BaseGlobalController {
 }
 
 
-class GlobalController implements BaseGlobalController {
+class GlobalHelper implements BaseGlobalHelper {
 
   @override
   void unFocusKeyBoard(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/App/Utils/route_builder.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/Utils/route_builder.dart';
-import 'package:todo_app/Core/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
 abstract class BaseTodoController {
@@ -42,6 +42,7 @@ class TodoController implements BaseTodoController {
         title: title , content: content , date: DateTime.now().toString() ,
         checkTitleDirection: checkTitleDirection , checkContentDirection: checkContentDirection
     );
+
     if(title.isEmpty && content.isEmpty) {
       App.alertWidgets.customSnackBar(
           text: App.strings.createScreenError ,

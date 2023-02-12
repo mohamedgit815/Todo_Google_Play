@@ -36,6 +36,7 @@ abstract class BaseTextWidgets {
 
 }
 
+
 class TextWidget implements BaseTextWidgets {
 
   @override

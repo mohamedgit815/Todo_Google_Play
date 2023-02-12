@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/Utils/my_app.dart';
 import 'package:todo_app/Controller/controller.dart';
-import 'package:todo_app/Core/Utils/my_app.dart';
 
 
 Future<void> main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
 
   await Controller.dbHelper.createDatabase();
@@ -14,5 +13,4 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp( const ProviderScope( child: MyApp() ));
-
 }

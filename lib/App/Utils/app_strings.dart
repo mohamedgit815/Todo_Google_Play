@@ -1,6 +1,3 @@
-
-
-
 class AppStrings {
 
   /// Add Here Name Languages

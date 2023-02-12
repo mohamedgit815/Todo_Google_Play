@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:todo_app/Core/Utils/localization.dart';
+import 'package:todo_app/App/Utils/app_localization.dart';
 
 
-abstract class BaseLocalizationController {
+abstract class BaseLocalizationHelper {
   /// To Switch Languages
   Locale switchLang(String lang);
 
@@ -17,14 +17,8 @@ abstract class BaseLocalizationController {
   Iterable<Locale> supportedLocales();
 
   /// To Add Delegate and add AppLocalization Delegate
-  Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates(){
-    return const [
-      AppLocalization.delegate ,
-      GlobalWidgetsLocalizations.delegate ,
-      GlobalMaterialLocalizations.delegate ,
-      GlobalCupertinoLocalizations.delegate
-    ];
-  }
+  Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates();
+
 
   /// To Handel if Happen any thing in languages will show English
   Locale? localeResolutionCallback(Locale? currentLocal ,Iterable<Locale> supportedLocal );
@@ -32,7 +26,7 @@ abstract class BaseLocalizationController {
 }
 
 
-class LocalizationController implements BaseLocalizationController {
+class LocalizationHelper implements BaseLocalizationHelper {
 
   @override
   Locale switchLang(String lang) {
