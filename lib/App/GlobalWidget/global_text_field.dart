@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/App/app.dart';
 
 
 class GlobalTextField extends StatelessWidget {
@@ -38,7 +37,7 @@ class GlobalTextField extends StatelessWidget {
       textDirection: textDirection ?? TextDirection.ltr,
       //maxLength: 100 ,
       maxLines: maxLine ,
-      cursorColor: App.color.cursorColor ,
+      //cursorColor: App.color.cursorColor ,
       decoration: InputDecoration(
           hintText: hintText ,
         suffixIcon: suffixIcon

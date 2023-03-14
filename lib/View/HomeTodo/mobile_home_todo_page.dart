@@ -1,39 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/Utils/route_builder.dart';
 import 'package:todo_app/App/Utils/general.dart';
 import 'package:todo_app/App/app.dart';
-import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
 import 'package:todo_app/View/HomeTodo/mobile_home_todo_widgets.dart';
 
 
 
-class MobileHomeTodoPage extends ConsumerStatefulWidget {
-  final InitHomeTodo home;
+class MobileHomeTodoPage extends StatefulWidget {
+  final InitHomeTodoState state;
 
   const MobileHomeTodoPage({
     Key? key ,
-    required this.home ,
+    required this.state ,
   }) : super(key: key);
 
   @override
-  ConsumerState<MobileHomeTodoPage> createState() => _MobileHomeTodoPageState();
+  State<MobileHomeTodoPage> createState() => _MobileHomeTodoPageState();
 }
 
-
-class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
- with MobileHomeTodoWidgets {
-
-
+class _MobileHomeTodoPageState extends State<MobileHomeTodoPage> with MobileHomeTodoWidgets {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: mobileFloatingActionButton(
-            providerListenable: widget.home.main.notificationProv ,
+          initState: widget.state ,
+            providerListenable: widget.state.main.notificationProv ,
             onPress: () async {
               /// HomeTodoController navigateToCreateTodoScreen
-              Controller.navigator.navigateToCreateTodoScreen(context);
+              Navigator.of(context).pushNamed(RouteGenerators.createScreen);
+              //widget.state.app.navigator.navigatorKey.currentState!.pushNamed(RouteGenerators.createScreen);
+              //widget.state.controller.navigator.navigateToCreateTodoScreen(context:context , app: widget.state.app);
             }
         ),
 
@@ -43,10 +41,9 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
               mobileSliverAppBar(context) ,
             ],
 
-
             /// To Show User Data Builder
             body: FutureBuilder(
-                future: widget.home.main.dbHelperController.fetchAllTodo() ,
+                future: widget.state.main.dbHelperController.fetchAllTodo() ,
                 builder: (BuildContext buildContext , AsyncSnapshot<List<Map<String,dynamic>>> snapshot) {
                   if(snapshot.connectionState == ConnectionState.waiting){
 
@@ -59,7 +56,7 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                   } else {
 
                     if(snapshot.data!.isEmpty) {
-                      return Center(child: App.text.text(text: "No Items" , fontSize: 25.0,));
+                      return Center(child: widget.state.app.text.text(text: "No Items" , fontSize: 25.0,));
                     } else {
                       return ListView.separated(
                           key: PageStorageKey<String>(StorageKeyEnum.pageStorageKeyHome.name) ,
@@ -71,40 +68,37 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
                             final int id = snapshot.data!.elementAt(i)[ModelEnum.id.name];
                             return ListTile(
                               key: ValueKey<String>(snapshot.data!.elementAt(i)[ModelEnum.id.name].toString()),
-                              title: App.text.text(text: model.title.isEmpty ? "${snapshot.data!.elementAt(i)[ModelEnum.id.name]}" : model.title ) ,
-                              subtitle: App.text.text(text: model.content ) ,
+                              title: widget.state.app.text.text(text: model.title.isEmpty ? "${snapshot.data!.elementAt(i)[ModelEnum.id.name]}" : model.title ) ,
+                              subtitle: widget.state.app.text.text(text: model.content ) ,
                               trailing: IconButton(onPressed: () async {
                                 return await showDialog(
-                                    context: context,
-                                    builder: (BuildContext b)=>App.globalWidgets.globalAlertDialog(
-                                        title: App.strings.sureDialog,
+                                    context: context ,
+                                    builder: (BuildContext b)=>widget.state.app.globalWidgets.globalAlertDialog(
+                                        title: widget.state.app.strings.sureDialog,
                                         onPressForNo: () {
                                           App.navigator.backPageRouter(context: context);
                                         },
                                         onPressForYes: (){
                                           setState(() {
-                                            Controller.todo.deleteTodoController(id: id , context: context);
+                                            widget.state.controller.todo.deleteTodoController(
+                                                id: id ,
+                                                context: context ,
+                                              controller: widget.state.controller ,
+                                              app: widget.state.app
+                                            );
                                           });
                                           App.navigator.backPageRouter(context: context);
                                         }
                                     ));
 
                               }, icon: const Icon(Icons.delete)),
-                              onTap: () async {
-                                // Navigator.of(context).restorablePushNamed(
-                                //     RouteGenerators.nextPage,
-                                //     arguments: [id , model.content] );
-                                //App.navigator.pushNamedRouter(route: RouteGenerators.updateTodoScreen, context: context,arguments: [model ,id]);
-                                Controller.navigator.navigateToUpdateTodoScreen(context: context,
-                                    arguments: [
-                                      id ,
-                                      model.title ,
-                                      model.content ,
-                                      model.date ,
-                                      model.checkTitleDirection ,
-                                      model.checkContentDirection
-                                    ]);
-                                //await Navigator.of(context).pushNamed(RouteGenerators.updateTodoScreen , arguments: [id , model]);
+                              onTap: () {
+                                widget.state.main.navigateToUpdateScreen(
+                                    state: widget.state,
+                                    context: context,
+                                    model: model,
+                                    id: id
+                                );
                               },
                             );
                           });
@@ -119,6 +113,4 @@ class _MobileHomeTodoPageState extends ConsumerState<MobileHomeTodoPage>
 
     );
   }
-
-
 }

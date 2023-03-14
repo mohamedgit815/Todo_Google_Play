@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/App/app.dart';
-import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/init_update.dart';
-import 'package:todo_app/View/UpdateTodo/main_update_todo_state.dart';
 import 'package:todo_app/View/UpdateTodo/mobile_update_todo_page.dart';
-
 
 
 class MainUpdateTodoScreen extends ConsumerStatefulWidget {
@@ -31,20 +27,17 @@ class MainUpdateTodoScreen extends ConsumerStatefulWidget {
   ConsumerState<MainUpdateTodoScreen> createState() => _MainUpdateTodoScreenState();
 }
 
-class _MainUpdateTodoScreenState extends ConsumerState<MainUpdateTodoScreen>
-with MainUpdateTodoState {
+class _MainUpdateTodoScreenState extends ConsumerState<MainUpdateTodoScreen> {
 
   late final BaseTodoModel todoModel;
-  late final InitUpdateTodo update;
+  late final InitUpdateTodoState state;
 
 
   @override
   void initState() {
     super.initState();
 
-    update = InitUpdateTodo();
-
-
+    state = InitUpdateTodoState();
 
     todoModel = TodoModel(
         checkTitleDirection: widget.checkTitleDirection ,
@@ -54,24 +47,24 @@ with MainUpdateTodoState {
         date: widget.date
     );
 
-    update.main.dbHelperController = Controller.dbHelper;
-    update.main.titleController.text = widget.title; /// To TextField Equal Data from DataBase
-    update.main.contentController.text = widget.content; /// To TextField Equal Data from DataBase
+    state.main.dbHelperController = state.controller.dbHelper;
+    state.main.titleController.text = widget.title; /// To TextField Equal Data from DataBase
+    state.main.contentController.text = widget.content; /// To TextField Equal Data from DataBase
 
 
     if(widget.checkTitleDirection == 0) {
       /// to Change TextField Direction for Title
-      ref.read(provUpdateTitleDirection).boolean = true;
+      ref.read(state.main.provUpdateTitleDirection).boolean = true;
     } else {
-      ref.read(provUpdateTitleDirection).boolean = false;
+      ref.read(state.main.provUpdateTitleDirection).boolean = false;
     }
 
 
     if(widget.checkContentDirection == 0) {
       /// to Change TextField Direction for Content
-      ref.read(provUpdateContentDirection).boolean = true;
+      ref.read(state.main.provUpdateContentDirection).boolean = true;
     } else {
-      ref.read(provUpdateContentDirection).boolean = false;
+      ref.read(state.main.provUpdateContentDirection).boolean = false;
     }
 
 
@@ -90,8 +83,8 @@ with MainUpdateTodoState {
   @override
   void dispose() {
     super.dispose();
-    titleController.dispose();
-    contentController.dispose();
+    state.main.titleController.dispose();
+    state.main.contentController.dispose();
   }
 
   // @override
@@ -110,80 +103,92 @@ with MainUpdateTodoState {
 
     return WillPopScope(
       onWillPop: () async {
-        if(
-        update.main.titleController.text.isEmpty && update.main.contentController.text.isEmpty
-        ) {
-          /// AlertDialog for WillPopScope
-          return await showDialog(
-              context: context,
-              builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
-                  title: App.strings.deleteDialog ,
-                  onPressForNo: () {
-                    /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                    Controller.navigator.navigatorHomeScreen(context);
-                  } ,
-
-                  onPressForYes: () async {
-                    /// deleteItem used if TextField is Empty  path is: HomeController
-                    //return await deleteItem(id: widget.id)
-                    return await Controller.todo.deleteTodoController(id: widget.id , context: context)
-                        .then((value) async {
-                      /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                      Controller.navigator.navigatorHomeScreen(context);
-                    });
-                  }
-              )
-          );
-        } else if (
-        update.main.titleController.text.length != widget.title.length
-            || /// To Check TextField is empty or no
-            update.main.contentController.text.length != widget.content.length
-        ) {
-          /// AlertDialog for WillPopScope
-          return await showDialog(
-              context: context,
-              builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
-                  title: App.strings.saveDialog ,
-                  onPressForNo: () async {
-                    /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
-                    Controller.navigator.navigatorHomeScreen(context);
-                  } ,
-
-                  onPressForYes: () async {
-                    /// updateTodoController used if TextField is not Empty path is: UpdateController
-                    return await Controller.todo.updateTodoController(
-                      context: context ,
-                      id: widget.id ,
-                      title: titleController.text ,
-                      content: contentController.text,
-                      checkTitleDirection: ref.read(provUpdateTitleDirection).boolean ? 0 : 1 ,
-                      checkContentDirection: ref.read(provUpdateContentDirection).boolean ? 0 : 1 ,
-
-                    );
-                  }
-              )
-          );
-        } else {
-          return true;
-        }
+        return await state.main.willPopScope(
+            state: state ,
+            context: context ,
+            id: widget.id ,
+            ref: ref ,
+            title: widget.title ,
+            content: widget.content
+        );
+        // if(
+        // state.main.titleController.text.isEmpty && state.main.contentController.text.isEmpty
+        // ) {
+        //   /// AlertDialog for WillPopScope
+        //   return await showDialog(
+        //       context: context,
+        //       builder: (BuildContext context) => state.app.globalWidgets.globalAlertDialog(
+        //           title: state.app.strings.deleteDialog ,
+        //           onPressForNo: () {
+        //             /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+        //             state.controller.navigator.navigatorHomeScreen(context);
+        //           } ,
+        //
+        //           onPressForYes: () async {
+        //             /// deleteItem used if TextField is Empty  path is: HomeController
+        //             //return await deleteItem(id: widget.id)
+        //             return await state.controller.todo.deleteTodoController(
+        //                 id: widget.id ,
+        //                 context: context ,
+        //               controller: state.controller ,
+        //               app: state.app ,
+        //             )
+        //                 .then((value) async {
+        //               /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+        //               state.controller.navigator.navigatorHomeScreen(context);
+        //             });
+        //           }
+        //       )
+        //   );
+        // } else if (
+        // state.main.titleController.text.length != widget.title.length
+        //     || /// To Check TextField is empty or no
+        //     state.main.contentController.text.length != widget.content.length
+        // ) {
+        //   /// AlertDialog for WillPopScope
+        //   return await showDialog(
+        //       context: context,
+        //       builder: (BuildContext context) => state.app.globalWidgets.globalAlertDialog(
+        //           title: state.app.strings.saveDialog ,
+        //           onPressForNo: () async {
+        //             /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
+        //             state.controller.navigator.navigatorHomeScreen(context);
+        //           } ,
+        //
+        //           onPressForYes: () async {
+        //             /// updateTodoController used if TextField is not Empty path is: UpdateController
+        //             return await state.controller.todo.updateTodoController(
+        //               context: context ,
+        //               id: widget.id ,
+        //               controller: state.controller ,
+        //               app: state.app ,
+        //               title: state.main.titleController.text ,
+        //               content: state.main.contentController.text,
+        //               checkTitleDirection: ref.read(state.main.provUpdateTitleDirection).boolean ? 0 : 1 ,
+        //               checkContentDirection: ref.read(state.main.provUpdateContentDirection).boolean ? 0 : 1 ,
+        //
+        //             );
+        //           }
+        //       )
+        //   );
+        // } else {
+        //   return true;
+        // }
       },
       child: GestureDetector(
         onTap: () {
           /// GlobalController : To Hide Keyboard
-          return Controller.global.unFocusKeyBoard(context);
+          return state.controller.global.unFocusKeyBoard(context);
         } ,
 
 
-        child: App.packageWidgets.responsiveBuilderScreen(
+        child: state.app.packageWidgets.responsiveBuilderScreen(
           mobile: MobileUpdateTodoPage(
-            update: update ,
+            state: state ,
               id: widget.id ,
               model: todoModel ,
-              // titleController: titleController ,
-              // contentController: contentController ,
-              // dbHelperController: dbHelperController ,
-              // provUpdateTitleDirection: provUpdateTitleDirection ,
-              // provUpdateContentDirection: provUpdateContentDirection
+              ref: ref ,
+            app: state.app,
           ) ,
 
           tablet: null ,

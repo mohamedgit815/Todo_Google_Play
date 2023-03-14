@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/App/Utils/general.dart';
-import 'package:todo_app/App/app.dart';
-import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/View/CreateTodo/init_create.dart';
-import 'package:todo_app/View/CreateTodo/main_create_todo_state.dart';
 import 'package:todo_app/View/CreateTodo/mobile_create_todo_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,23 +14,22 @@ class MainCreateTodoScreen extends ConsumerStatefulWidget {
 }
 
 
-class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
-    with MainCreateTodoState , RestorationMixin {
+class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen> with RestorationMixin {
 
-  late final InitCreateTodo create;
+  late final InitCreateTodoState state;
 
   @override
   void initState() {
     super.initState();
-    create = InitCreateTodo();
-    create.main.dbHelperController = Controller.dbHelper;
+    state = InitCreateTodoState();
+    state.main.dbHelperController = state.controller.dbHelper;
   }
 
   @override
   void dispose() {
     super.dispose();
-    titleController.value.dispose();
-    contentController.value.dispose();
+    state.main.titleController.value.dispose();
+    state.main.contentController.value.dispose();
   }
 
   @override
@@ -41,8 +37,8 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(titleController, RestorationEnum.createTitleRestorationId.name);
-    registerForRestoration(contentController, RestorationEnum.createContentRestorationId.name);
+    registerForRestoration(state.main.titleController, RestorationEnum.createTitleRestorationId.name);
+    registerForRestoration(state.main.contentController, RestorationEnum.createContentRestorationId.name);
   }
 
 
@@ -52,47 +48,35 @@ class _MainCreateTodoScreenState extends ConsumerState<MainCreateTodoScreen>
       onWillPop: () async {
 
         /// To Check Controller is empty or no
-        if(titleController.value.text.isNotEmpty || contentController.value.text.isNotEmpty) {
-          /// AlertDialog for WillPopScope
-          return await showDialog(context: context , builder: (BuildContext buildContext) {
-            return App.globalWidgets.globalAlertDialog(
-                title: App.strings.saveDialog ,
-                onPressForNo: ()  {
-                  Controller.navigator.navigatorHomeScreen(context);
-                } ,
-                onPressForYes: () async {
-                  await Controller.todo.createTodoController(
-                    context: context ,
-                    title: titleController.value.text ,
-                    content: contentController.value.text ,
-                    checkTitleDirection: ref.read(provTitleDirection).boolean ? 0 : 1 ,
-                    checkContentDirection: ref.read(provContentDirection).boolean ? 0 : 1 ,
-                  );
-                }
-            );
-          });
-        } else {
-          return true;
-        }
-
+        return await state.main.willPopScope(
+            context: context ,
+            state: state ,
+            ref: ref
+        );
       } ,
 
 
       child: GestureDetector(
         onTap: () {
           /// GlobalController : To Hide Keyboard
-          return Controller.global.unFocusKeyBoard(context);
+          return state.controller.global.unFocusKeyBoard(context);
         } ,
 
 
-        child: App.packageWidgets.responsiveBuilderScreen(
+        child: state.app.packageWidgets.responsiveBuilderScreen(
           mobile: MobileCreateTodoPage(
-            create: create ,
-              titleController: titleController.value ,
-              contentController: contentController.value ,
+            state: state ,
+              titleController: state.main.titleController.value ,
+              contentController: state.main.contentController.value ,
+             ref: ref ,
           ) ,
-          deskTop: null ,
+
           tablet: null ,
+
+
+          deskTop: null
+
+
         ),
       ),
     );

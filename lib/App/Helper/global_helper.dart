@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/App/Utils/provider_state.dart';
 import 'package:todo_app/App/app.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 abstract class BaseGlobalHelper {
+
   /// To Hide The Keyboard for Screen
   void unFocusKeyBoard(BuildContext context);
 
@@ -27,11 +28,11 @@ abstract class BaseGlobalHelper {
 }
 
 
-class GlobalHelper implements BaseGlobalHelper {
+class GlobalHelper extends BaseGlobalHelper {
 
   @override
   void unFocusKeyBoard(BuildContext context) {
-    return App.navigator.navigatorKey.currentState!.focusScopeNode.unfocus();
+    return App.navigator.navigatorKey.currentState!.focusNode.unfocus();
   }
 
 

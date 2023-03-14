@@ -4,6 +4,7 @@ import 'package:todo_app/App/app.dart';
 
 
 abstract class BaseNavigatorController {
+
   /// Navigator To HomeScreen
   String navigatorHomeScreen(BuildContext context);
 
@@ -15,7 +16,7 @@ abstract class BaseNavigatorController {
 }
 
 
-class NavigatorController implements BaseNavigatorController {
+class NavigatorController extends BaseNavigatorController {
 
   @override
   String navigatorHomeScreen(BuildContext context) {

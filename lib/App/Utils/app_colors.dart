@@ -16,7 +16,7 @@ class AppColor {
 
 /// LightTheme
 //const Color lightMainColor = Color(0xFF333333);
-  final Color lightMainColor = const Color(0xff075E55);
+  final Color lightMainColor = Colors.brown;
   final Color lightColorTow = const Color(0xffCC7D00);
   final Color lightColorThree = const Color(0xff7B7B7B);
   final MaterialColor lightColorFour = Colors.red;

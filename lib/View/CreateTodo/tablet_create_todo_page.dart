@@ -5,7 +5,7 @@ import 'package:todo_app/Controller/db_helper_controller.dart';
 import 'package:todo_app/View/CreateTodo/init_create.dart';
 
 class TabletCreateTodoPage extends StatefulWidget {
-  final InitCreateTodo create;
+  final InitCreateTodoState create;
   final TextEditingController titleController , contentController;
   final BaseDBHelperController dbHelperController;
   final ProviderListenable<BooleanState> provTitleDirection , provContentDirection;

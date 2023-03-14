@@ -6,7 +6,7 @@ import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/init_update.dart';
 
 class TabletUpdateTodoPage extends StatefulWidget {
-  final InitUpdateTodo update;
+  final InitUpdateTodoState update;
   final int id;
   final BaseTodoModel model;
   final ProviderListenable<BooleanState> provUpdateTitleDirection , provUpdateContentDirection;

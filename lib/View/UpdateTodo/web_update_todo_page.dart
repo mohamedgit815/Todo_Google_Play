@@ -7,7 +7,7 @@ import 'package:todo_app/View/UpdateTodo/init_update.dart';
 
 
 class WebUpdateTodoPage extends StatefulWidget {
-  final InitUpdateTodo update;
+  final InitUpdateTodoState update;
   final int id;
   final BaseTodoModel model;
   final ProviderListenable<BooleanState> provUpdateTitleDirection , provUpdateContentDirection;

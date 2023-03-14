@@ -2,9 +2,10 @@ import 'package:equatable/equatable.dart';
 import 'package:todo_app/App/Utils/general.dart';
 
 
-class BaseTodoModel extends Equatable {
+abstract class BaseTodoModel extends Equatable {
   final String title , content , date;
   final int checkTitleDirection , checkContentDirection;
+
 
   const BaseTodoModel({
     required this.title ,
@@ -13,6 +14,8 @@ class BaseTodoModel extends Equatable {
     required this.checkTitleDirection ,
     required this.checkContentDirection
   });
+
+  Map<String , dynamic> toJson();
 
   @override
   List<Object?> get props => [
@@ -41,10 +44,10 @@ class TodoModel extends BaseTodoModel {
         date: json[ModelEnum.date.name] ,
         checkTitleDirection: json[ModelEnum.checkTitleDirection.name] ,
         checkContentDirection: json[ModelEnum.checkContentDirection.name]
-
     );
   }
 
+  @override
   Map<String , dynamic> toJson() => {
     ModelEnum.title.name : title ,
     ModelEnum.content.name : content ,

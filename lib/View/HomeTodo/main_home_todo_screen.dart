@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/App/Utils/provider_state.dart';
-import 'package:todo_app/App/app.dart';
-import 'package:todo_app/Controller/controller.dart';
+//import 'package:todo_app/App/Utils/provider_state.dart';
 import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
-import 'package:todo_app/View/HomeTodo/main_home_todo_state.dart';
 import 'package:todo_app/View/HomeTodo/mobile_home_todo_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -19,19 +16,18 @@ class MainHomeTodoScreen extends ConsumerStatefulWidget {
 }
 
 
-class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen>
-    with MainHomeTodoState {
+class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen> {
 
-  late final InitHomeTodo home ;
+  late final InitHomeTodoState state ;
 
   @override
   void initState() {
     super.initState();
 
-    home = InitHomeTodo();
+    state = InitHomeTodoState();
 
-    home.main.notificationProv = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
-    home.main.dbHelperController = Controller.dbHelper;
+    //state.main.notificationProv = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+    state.main.dbHelperController = state.controller.dbHelper;
   }
 
 
@@ -42,22 +38,28 @@ class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen>
             return NotificationListener(
               onNotification: (UserScrollNotification notification) {
                 /// HomeTodoController notificationListener
-                return Controller.global.notificationListener(
+                return state.controller.global.notificationListener(
                     notification: notification ,
                     ref: ref ,
-                    providerListenable: notificationProv
+                    providerListenable: state.main.notificationProv
                 );
               },
-              child: App.packageWidgets.responsiveBuilderScreen(
+              child: state.app.packageWidgets.responsiveBuilderScreen(
                 mobile: MobileHomeTodoPage(
-                  home: home ,
-                  // dbHelperController: dbHelperController ,
-                  // notificationProv: notificationProv ,
+                  state: state
                 ) ,
 
-                deskTop: null ,
+                deskTop: Scaffold(
+                  appBar: AppBar(
+                    title: const Text("DeskTop"),
+                  ),
+                ) ,
 
-                tablet: null ,
+                tablet: Scaffold(
+                  appBar: AppBar(
+                    title: const Text("Tablet"),
+                  ),
+                ) ,
               ),
             );
           }

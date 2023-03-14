@@ -8,7 +8,7 @@ import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
 class TabletHomeTodoPage extends StatefulWidget {
   final BaseDBHelperController dbHelperController;
   final ProviderListenable<BooleanState> notificationProv;
-  final InitHomeTodo home;
+  final InitHomeTodoState home;
 
   const TabletHomeTodoPage({
     Key? key ,

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/App/Utils/general.dart';
 import 'package:todo_app/App/Utils/provider_state.dart';
-import 'package:todo_app/App/app.dart';
+import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
+
 
 
 abstract class BaseMobileHomeTodoWidgets {
@@ -13,8 +14,11 @@ abstract class BaseMobileHomeTodoWidgets {
   /// MobileFloatingActionButton
   Consumer mobileFloatingActionButton({
     required ProviderListenable<BooleanState> providerListenable ,
-    required VoidCallback onPress
+    required VoidCallback onPress ,
+    required InitHomeTodoState initState
   });
+
+
 }
 
 
@@ -37,13 +41,14 @@ class MobileHomeTodoWidgets implements BaseMobileHomeTodoWidgets {
   @override
   Consumer mobileFloatingActionButton({
     required ProviderListenable<BooleanState> providerListenable ,
-    required VoidCallback onPress
+    required VoidCallback onPress ,
+    required InitHomeTodoState initState
   }) {
     return Consumer(
         builder: (context , prov , _) {
           return Visibility(
             visible: !prov.watch(providerListenable).boolean ? false : true ,
-            child: App.globalWidgets.globalFloatingActionButton(
+            child: initState.app.globalWidgets.globalFloatingActionButton(
                 onPress: onPress ,
                 child: const Icon(Icons.add)
             ),
@@ -51,5 +56,7 @@ class MobileHomeTodoWidgets implements BaseMobileHomeTodoWidgets {
         }
     );
   }
+
+
 
 }

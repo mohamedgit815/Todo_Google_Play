@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo_app/App/Utils/app_localization.dart';
+import 'package:todo_app/App/Utils/general.dart';
+import 'package:todo_app/App/Utils/provider_state.dart';
 
 
 abstract class BaseLocalizationHelper {
+
+  final ProviderListenable<PreferencesStringState> langProvider = ChangeNotifierProvider((ref) => PreferencesStringState(
+      key: PreferencesEnum.preferencesLang.name ,
+      defaultName: LangEnum.en.name
+  ));
+
   /// To Switch Languages
   Locale switchLang(String lang);
 
@@ -26,7 +35,15 @@ abstract class BaseLocalizationHelper {
 }
 
 
-class LocalizationHelper implements BaseLocalizationHelper {
+class LocalizationHelper extends BaseLocalizationHelper {
+
+  // /// Riverpod for Languages
+  // @override
+  // ProviderListenable<PreferencesStringState> langProvider = ChangeNotifierProvider((ref) => PreferencesStringState(
+  //     key: PreferencesEnum.preferencesLang.name ,
+  //     defaultName: LangEnum.en.name
+  // ));
+
 
   @override
   Locale switchLang(String lang) {

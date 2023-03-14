@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todo_app/App/Utils/provider_state.dart';
 import 'package:todo_app/App/Utils/route_builder.dart';
 import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/controller.dart';
+import 'package:todo_app/main.dart';
+
 
 
 class MyApp extends ConsumerWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final App app;
+  final Controller controller;
+
+  const MyApp({
+    Key? key ,
+    required this.app ,
+    required this.controller
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context , WidgetRef ref) {
@@ -20,48 +30,53 @@ class MyApp extends ConsumerWidget {
 
       onGenerateRoute: RouteGenerators.onGenerate ,
 
-      themeMode: ThemeMode.dark ,
+      themeMode: ThemeMode.light ,
 
-      darkTheme: App.theme.darkThemeData() ,
+       darkTheme: app.theme.darkThemeData(app: app) ,
 
-      initialRoute: RouteGenerators.homeScreen ,
+       theme: app.theme.lightThemeData(app: app),
 
-      //locale: Controller.global.switchLang(ref.watch(App.variable.langProvider).lang),
+       initialRoute: RouteGenerators.homeScreen ,
+
 
       /// Localization
       locale: const Locale("en") ,
-
-      // supportedLocales: const [
-      //   Locale("en","") ,
-      //   Locale("ar","") ,
-      //   Locale('es','')
-      // ] ,
-
-      supportedLocales: Controller.localization.supportedLocales() ,
-
-      // localizationsDelegates: const [
-      //   AppLocalization.delegate ,
-      //   GlobalWidgetsLocalizations.delegate ,
-      //   GlobalMaterialLocalizations.delegate ,
-      //   GlobalCupertinoLocalizations.delegate
-      // ],
-
-      localizationsDelegates: Controller.localization.localizationsDelegates(),
-
-      // localeResolutionCallback: ( currentLocal , supportedLocal ) {
-      //   if( currentLocal != null ) {
-      //     for( Locale loopLocal in supportedLocal ) {
-      //       if( currentLocal.languageCode == loopLocal.languageCode ){
-      //         return currentLocal;
-      //       }
-      //     }
-      //   }
-      //   return supportedLocal.first ;
-      // },
-
+      //locale: Controller.global.switchLang(ref.watch(App.variable.langProvider).lang),
+      supportedLocales: controller.localization.supportedLocales() ,
+      localizationsDelegates: controller.localization.localizationsDelegates(),
       localeResolutionCallback: (Locale? currentLocal ,Iterable<Locale> supportedLocal){
-        return Controller.localization.localeResolutionCallback(currentLocal, supportedLocal);
+        return controller.localization.localeResolutionCallback(currentLocal, supportedLocal);
       },
+
     );
   }
 }
+
+
+class TestPage extends StatefulWidget {
+  final App app;
+  const TestPage({Key? key , required this.app}) : super(key: key);
+
+  @override
+  State<TestPage> createState() => _TestPageState();
+}
+
+class _TestPageState extends State<TestPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MaterialButton(onPressed: () {
+            App.navigator.navigatorKey.currentState!.push(MaterialPageRoute(builder: (_)=>Testing(app: widget.app)));
+          } , child: const Text("data"),)
+        ],
+      ),
+    );
+  }
+}
+
+
+
+final ProviderListenable dataProv = ChangeNotifierProvider((ref) => BooleanState());

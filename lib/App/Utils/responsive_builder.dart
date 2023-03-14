@@ -20,7 +20,7 @@ class ResponsiveBuilderScreen extends StatelessWidget {
         builder: (BuildContext context , SizingInformation size) {
           if(size.deviceScreenType == DeviceScreenType.desktop){
             return deskTop ?? mobile;
-          } else if(size.deviceScreenType == DeviceScreenType.tablet){
+          } else if(size.deviceScreenType == DeviceScreenType.tablet) {
             return tablet ?? mobile;
           } else {
             return mobile;

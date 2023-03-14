@@ -1,61 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todo_app/Controller/controller.dart';
 import 'package:todo_app/View/CreateTodo/init_create.dart';
-import 'package:todo_app/View/CreateTodo/main_create_todo_state.dart';
 import 'package:todo_app/View/CreateTodo/mobile_create_todo_widgets.dart';
 
 
 
-class MobileCreateTodoPage extends ConsumerStatefulWidget {
-  final InitCreateTodo create;
+
+class MobileCreateTodoPage extends StatelessWidget with MobileCrateTodoWidgets{
+  final InitCreateTodoState state;
+  final WidgetRef ref;
   final TextEditingController titleController , contentController;
 
   const MobileCreateTodoPage({
     Key? key ,
-    required this.create ,
+    required this.state ,
+    required this.ref ,
     required this.titleController ,
     required this.contentController ,
   }) : super(key: key);
 
-  @override
-  ConsumerState<MobileCreateTodoPage> createState() => _MobileCreateTodoPageState();
-}
-
-
-class _MobileCreateTodoPageState extends ConsumerState<MobileCreateTodoPage>
-with MobileCrateTodoWidgets {
-
-  late final BaseMainCreateTodoState _create ;
-
-  @override
-  void initState() {
-    super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //
-    // });
-    _create = widget.create.main;
-  }
-
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       /// _MobileCreateTodoWidgets for FloatingActionButton
       floatingActionButton: floatingActionButton(
+          state: state ,
           onPress: () async {
-             await Controller.todo.createTodoController(
-              context: context ,
-              title: widget.titleController.text ,
-              content: widget.contentController.text ,
-               checkTitleDirection: ref.read(_create.provTitleDirection).boolean ? 0 : 1 ,
-               checkContentDirection: ref.read(_create.provContentDirection).boolean ? 0 : 1 ,
-             );
+            return await state.main.createTodo(
+                context: context ,
+                state: state ,
+                ref: ref
+            );
           }
       ) ,
 
       /// _MobileCreateTodoWidgets for AppBar
-      appBar: appBar(providerListenable: _create.provContentDirection,context: context) ,
+      appBar: appBar(providerListenable: state.main.provContentDirection,context: context) ,
 
 
       body: LayoutBuilder(
@@ -65,16 +47,18 @@ with MobileCrateTodoWidgets {
 
               /// _MobileCreateTodoWidgets for _titleTextField
               titleTextField( /// CreateTodoController
-                  providerListenable: _create.provTitleDirection ,
-                  titleController: widget.titleController
+                  providerListenable: state.main.provTitleDirection ,
+                  titleController: titleController ,
+                  state: state
               ) ,
 
 
               /// _MobileCreateTodoWidgets for _contentTextField
               Expanded(
                   child: contentTextField( /// CreateTodoController
-                      contentController: widget.contentController,
-                      providerListenable: _create.provContentDirection
+                      contentController: contentController,
+                      providerListenable: state.main.provContentDirection,
+                      state: state
                   )
               ) ,
 

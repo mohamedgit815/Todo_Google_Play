@@ -28,10 +28,10 @@ abstract class BaseDBHelperController {
 }
 
 
-class DBHelperController implements BaseDBHelperController {
+class DBHelperController extends BaseDBHelperController {
 
-  @override
-  Database? db;
+  // @override
+  // Database? db;
 
 
   @override
@@ -83,6 +83,5 @@ class DBHelperController implements BaseDBHelperController {
     final Database? database = await createDatabase();
     return database!.update(GeneralEnum.todo.name, todoModel.toJson() , where: '${ModelEnum.id.name} = ?' , whereArgs: [id]);
   }
-
 
 }
