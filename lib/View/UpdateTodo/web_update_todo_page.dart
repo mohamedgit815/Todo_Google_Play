@@ -10,7 +10,7 @@ class WebUpdateTodoPage extends StatefulWidget {
   final InitUpdateTodoState update;
   final int id;
   final BaseTodoModel model;
-  final ProviderListenable<BooleanState> provUpdateTitleDirection , provUpdateContentDirection;
+  final ProviderListenable<BooleanProvider> provUpdateTitleDirection , provUpdateContentDirection;
   final TextEditingController titleController , contentController;
   final BaseDBHelperController dbHelperController;
 

@@ -52,34 +52,34 @@ class AppNavigator extends BaseAppNavigator {
 
 abstract class BaseAppValidator {
 
-  String? validatorName({String? v , required App app});
+  String? validatorName(String? v);
 
-  String? validatorEmail({String? v , required App app});
+  String? validatorEmail(String? v);
 
-  String? validatorPhone({String? v , required App app});
+  String? validatorPhone(String? v);
 
-  String? validatorPw({String? v , required App app});
+  String? validatorPw(String? v);
 }
 
 
 class AppValidator extends BaseAppValidator {
   @override
-  String? validatorName({String? v , required App app}) {
-    return !v!.contains(app.regExp.regExpName) ? 'Enter your Name by write form' : null ;
+  String? validatorName(String? v) {
+    return !v!.contains(App.regExp.regExpName) ? 'Enter your Name by write form' : null ;
   }
 
   @override
-  String? validatorEmail({String? v , required App app}) {
-    return !v!.contains(app.regExp.regExpEmail) ? 'Enter your Email by write form' : null ;
+  String? validatorEmail(String? v ) {
+    return !v!.contains(App.regExp.regExpEmail) ? 'Enter your Email by write form' : null ;
   }
 
   @override
-  String? validatorPhone({String? v , required App app}) {
-    return !v!.contains(app.regExp.regExpPhone) ? 'Enter your Phone by write form' : null;
+  String? validatorPhone(String? v) {
+    return !v!.contains(App.regExp.regExpPhone) ? 'Enter your Phone by write form' : null;
   }
 
   @override
-  String? validatorPw({String? v , required App app}) {
-    return !v!.contains(app.regExp.regExpPw) ? '[UpperCase , LowerCase , \$ ,# ,%]' : null;
+  String? validatorPw(String? v) {
+    return !v!.contains(App.regExp.regExpPw) ? '[UpperCase , LowerCase , \$ ,# ,%]' : null;
   }
 }

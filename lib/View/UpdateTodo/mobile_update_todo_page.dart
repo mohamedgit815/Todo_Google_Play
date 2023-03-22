@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/init_update.dart';
 import 'package:todo_app/View/UpdateTodo/mobile_update_todo_widgets.dart';
-import 'package:todo_app/App/app.dart';
 
 
 
@@ -12,11 +11,9 @@ class MobileUpdateTodoPage extends StatelessWidget with MobileUpdateTodoWidgets{
   final InitUpdateTodoState state;
   final BaseTodoModel model;
   final WidgetRef ref;
-  final App app;
 
   const MobileUpdateTodoPage({
     Key? key ,
-    required this.app ,
     required this.state ,
     required this.id ,
     required this.model ,
@@ -47,10 +44,10 @@ class MobileUpdateTodoPage extends StatelessWidget with MobileUpdateTodoWidgets{
           key: id ,
           state: state ,
           providerListenable: state.main.provUpdateContentDirection ,
-        model: model ,
-        onPressIcon: () {
+          model: model ,
+          onPressIcon: () {
             state.main.backButton(context);
-        }
+          }
       ) ,
 
 

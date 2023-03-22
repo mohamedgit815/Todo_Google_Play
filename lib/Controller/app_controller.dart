@@ -11,8 +11,8 @@ class Controller {
   final BaseTodoController todo = TodoController();
   final BaseNavigatorController navigator = NavigatorController();
 
+
   /// Helper
   final BaseDioHelper dio = DioHelper();
   final BaseGlobalHelper global = GlobalHelper();
-  final BaseLocalizationHelper localization = LocalizationHelper();
 }

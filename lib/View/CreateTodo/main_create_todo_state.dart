@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/App/Utils/provider_state.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Controller/db_helper_controller.dart';
 import 'package:todo_app/View/CreateTodo/init_create.dart';
 
 /// Variables
 
 abstract class BaseMainCreateTodoState {
-  ProviderListenable<BooleanState> provTitleDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+  ProviderListenable<BooleanProvider> provTitleDirection = ChangeNotifierProvider<BooleanProvider>((ref) => BooleanProvider());
 
-  ProviderListenable<BooleanState> provContentDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+  ProviderListenable<BooleanProvider> provContentDirection = ChangeNotifierProvider<BooleanProvider>((ref) => BooleanProvider());
 
   RestorableTextEditingController titleController = RestorableTextEditingController();
 
@@ -28,10 +29,17 @@ abstract class BaseMainCreateTodoState {
     required InitCreateTodoState state ,
     required WidgetRef ref
   });
+
+  Future<dynamic> backButton(BuildContext context);
 }
 
 
 class MainCreateTodoState extends BaseMainCreateTodoState {
+
+  @override
+  Future<dynamic> backButton(BuildContext context) async {
+    return await App.navigator.backPageRouter(context: context);
+  }
 
   @override
   Future<bool> willPopScope({
@@ -44,8 +52,8 @@ class MainCreateTodoState extends BaseMainCreateTodoState {
       /// AlertDialog for WillPopScope
       return await showDialog(
           context: context, builder: (BuildContext buildContext) {
-        return state.app.globalWidgets.globalAlertDialog(
-            title: state.app.strings.saveDialog,
+        return App.globalWidgets.globalAlertDialog(
+            title: App.strings.saveDialog,
             onPressForNo: () {
               state.controller.navigator.navigatorHomeScreen(context);
             },
@@ -61,7 +69,6 @@ class MainCreateTodoState extends BaseMainCreateTodoState {
                       .read(provContentDirection)
                       .boolean ? 0 : 1,
                   controller: state.controller,
-                  app: state.app
               );
             }
         );
@@ -81,7 +88,6 @@ class MainCreateTodoState extends BaseMainCreateTodoState {
     await state.controller.todo.createTodoController(
       context: context,
       controller: state.controller,
-      app: state.app,
       title: titleController.value.text,
       content: contentController.value.text,
       checkTitleDirection: ref

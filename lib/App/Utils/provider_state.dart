@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class BottomBarState extends ChangeNotifier {
+class BottomBarProvider extends ChangeNotifier {
 
   /// List for Bottom Navigation Bar
   final List<Widget> pages = const [
@@ -19,7 +19,7 @@ class BottomBarState extends ChangeNotifier {
   }
 }
 
-class BooleanState extends ChangeNotifier {
+class BooleanProvider extends ChangeNotifier {
   bool boolean = true;
 
   bool switchBoolean(){
@@ -38,7 +38,7 @@ class BooleanState extends ChangeNotifier {
   }
 }
 
-class IntegerState extends ChangeNotifier {
+class IntegerProvider extends ChangeNotifier {
   /// Integer
   int integer = 0;
 
@@ -48,7 +48,7 @@ class IntegerState extends ChangeNotifier {
   }
 }
 
-class StringState extends ChangeNotifier {
+class StringProvider extends ChangeNotifier {
   /// Strings
   String strings = '';
 
@@ -63,13 +63,13 @@ class StringState extends ChangeNotifier {
   }
 }
 
-class PreferencesStringState extends ChangeNotifier {
+class PreferencesStringProvider extends ChangeNotifier {
   late SharedPreferences _prefs;
   late String _lang;
   late String _key;
   String get lang => _lang;
 
-  PreferencesStringState({required String key , required String defaultName}) {
+  PreferencesStringProvider({required String key , required String defaultName}) {
     _lang = defaultName;
     _key = key;
     _loadFromPrefs();
@@ -97,7 +97,7 @@ class PreferencesStringState extends ChangeNotifier {
   }
 }
 
-class PreferencesBooleanState extends ChangeNotifier {
+class PreferencesBooleanProvider extends ChangeNotifier {
   /// To Load Data by Shared Preferences
 
   late String _key;
@@ -106,7 +106,7 @@ class PreferencesBooleanState extends ChangeNotifier {
 
   bool get darkTheme => _darkTheme;
 
-  PreferencesBooleanState(String key) {
+  PreferencesBooleanProvider({required String key}) {
     _darkTheme = true;
     _key = key;
     _loadFromPrefs();
@@ -138,7 +138,7 @@ class PreferencesBooleanState extends ChangeNotifier {
   }
 }
 
-class ImagePickerState extends ChangeNotifier {
+class ImagePickerProvider extends ChangeNotifier {
   /// To Get Images from Gallery or Camera
 
   //File? fileImage;
@@ -165,7 +165,7 @@ class ImagePickerState extends ChangeNotifier {
   //
 }
 
-class LoadImageAIState extends ChangeNotifier {
+class LoadImageAIProvider extends ChangeNotifier {
   // List<dynamic>? outputs;
   //
   //

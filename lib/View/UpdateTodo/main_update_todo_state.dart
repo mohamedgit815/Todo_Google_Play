@@ -9,9 +9,9 @@ import 'package:todo_app/View/UpdateTodo/init_update.dart';
 
 abstract class BaseMainUpdateTodoState {
 
-  final ProviderListenable<BooleanState> provUpdateTitleDirection = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+  final ProviderListenable<BooleanProvider> provUpdateTitleDirection = ChangeNotifierProvider<BooleanProvider>((ref) => BooleanProvider());
 
-  final ProviderListenable<BooleanState> provUpdateContentDirection =ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
+  final ProviderListenable<BooleanProvider> provUpdateContentDirection =ChangeNotifierProvider<BooleanProvider>((ref) => BooleanProvider());
 
   final TextEditingController titleController = TextEditingController();
 
@@ -38,6 +38,7 @@ abstract class BaseMainUpdateTodoState {
     required int id ,
     required WidgetRef ref
   });
+
 }
 
 
@@ -58,8 +59,8 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
       /// AlertDialog for WillPopScope
       return await showDialog(
           context: context,
-          builder: (BuildContext context) => state.app.globalWidgets.globalAlertDialog(
-              title: state.app.strings.deleteDialog ,
+          builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
+              title: App.strings.deleteDialog ,
               onPressForNo: () {
                 /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
                 state.controller.navigator.navigatorHomeScreen(context);
@@ -72,7 +73,6 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
                   id: id ,
                   context: context ,
                   controller: state.controller ,
-                  app: state.app ,
                 )
                     .then((value) async {
                   /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
@@ -89,8 +89,8 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
       /// AlertDialog for WillPopScope
       return await showDialog(
           context: context,
-          builder: (BuildContext context) => state.app.globalWidgets.globalAlertDialog(
-              title: state.app.strings.saveDialog ,
+          builder: (BuildContext context) => App.globalWidgets.globalAlertDialog(
+              title: App.strings.saveDialog ,
               onPressForNo: () async {
                 /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
                 state.controller.navigator.navigatorHomeScreen(context);
@@ -102,7 +102,6 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
                   context: context ,
                   id: id ,
                   controller: state.controller ,
-                  app: state.app ,
                   title: state.main.titleController.text ,
                   content: state.main.contentController.text,
                   checkTitleDirection: ref.read(state.main.provUpdateTitleDirection).boolean ? 0 : 1 ,
@@ -138,8 +137,8 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
     ) {
       return await showDialog(
           context: context ,
-          builder: (context)=> state.app.globalWidgets.globalAlertDialog(
-              title: state.app.strings.deleteDialog,
+          builder: (context)=> App.globalWidgets.globalAlertDialog(
+              title: App.strings.deleteDialog,
               onPressForNo: () async {
                 return await App.navigator.backPageRouter(context: context);
               },
@@ -150,7 +149,6 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
                   id: id ,
                   context: context ,
                   controller: state.controller ,
-                  app: state.app ,
                 )
                     .then((value) async {
                   /// navigatorHomeScreen is HomeController i used it to Navigator to HomeScreen.
@@ -171,7 +169,6 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
             context: context ,
             id: id ,
             controller: state.controller ,
-            app: state.app ,
             title: state.main.titleController.text ,
             content: state.main.contentController.text ,
             checkTitleDirection: ref.read(state.main.provUpdateTitleDirection).boolean ? 0 : 1 ,
@@ -180,4 +177,6 @@ class MainUpdateTodoState extends BaseMainUpdateTodoState {
       }
     }
   }
+
+
 }

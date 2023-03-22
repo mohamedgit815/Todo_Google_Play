@@ -9,7 +9,7 @@ import 'package:todo_app/App/Utils/provider_state.dart';
 
 abstract class BaseLocalizationHelper {
 
-  final ProviderListenable<PreferencesStringState> langProvider = ChangeNotifierProvider((ref) => PreferencesStringState(
+  final ProviderListenable<PreferencesStringProvider> langProvider = ChangeNotifierProvider((ref) => PreferencesStringProvider(
       key: PreferencesEnum.preferencesLang.name ,
       defaultName: LangEnum.en.name
   ));
@@ -36,13 +36,6 @@ abstract class BaseLocalizationHelper {
 
 
 class LocalizationHelper extends BaseLocalizationHelper {
-
-  // /// Riverpod for Languages
-  // @override
-  // ProviderListenable<PreferencesStringState> langProvider = ChangeNotifierProvider((ref) => PreferencesStringState(
-  //     key: PreferencesEnum.preferencesLang.name ,
-  //     defaultName: LangEnum.en.name
-  // ));
 
 
   @override

@@ -10,7 +10,7 @@ abstract class BaseGlobalWidgets {
   GlobalAlertDialog globalAlertDialog({
     required String title ,
     required VoidCallback onPressForNo ,
-    required VoidCallback onPressForYes
+    required VoidCallback onPressForYes ,
   });
 
   // GlobalTextField
@@ -27,7 +27,9 @@ abstract class BaseGlobalWidgets {
 
   // Global Floating Action Button
   GlobalFloatingActionButton globalFloatingActionButton({
-    required VoidCallback onPress , required Widget child , ValueKey? key
+    required VoidCallback onPress ,
+    required Widget child ,
+    ValueKey? key
   });
 }
 
@@ -40,12 +42,12 @@ class GlobalWidgets extends BaseGlobalWidgets {
   GlobalAlertDialog globalAlertDialog({
     required String title ,
     required VoidCallback onPressForNo ,
-    required VoidCallback onPressForYes
+    required VoidCallback onPressForYes ,
   }) {
     return GlobalAlertDialog(
         onPressForNo: onPressForNo,
         title: title ,
-        onPressForYes: onPressForYes
+        onPressForYes: onPressForYes ,
     );
   }
 
@@ -79,7 +81,9 @@ class GlobalWidgets extends BaseGlobalWidgets {
 
    @override
   GlobalFloatingActionButton globalFloatingActionButton({
-    required VoidCallback onPress , required Widget child , ValueKey? key
+    required VoidCallback onPress ,
+     required Widget child ,
+     ValueKey? key
   }) {
     return GlobalFloatingActionButton(onPress: onPress , valueKey: key , child: child);
   }

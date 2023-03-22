@@ -37,7 +37,11 @@ class MobileCreateTodoPage extends StatelessWidget with MobileCrateTodoWidgets{
       ) ,
 
       /// _MobileCreateTodoWidgets for AppBar
-      appBar: appBar(providerListenable: state.main.provContentDirection,context: context) ,
+      appBar: appBar(
+          providerListenable: state.main.provContentDirection ,
+          context: context ,
+          state: state
+      ) ,
 
 
       body: LayoutBuilder(

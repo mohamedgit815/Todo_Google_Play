@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/App/Utils/provider_state.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/Model/todo_model.dart';
 import 'package:todo_app/View/UpdateTodo/init_update.dart';
 
@@ -10,7 +11,7 @@ abstract class BaseMobileUpdateTodoWidgets {
   /// Appbar
   AppBar appBar({
     required int key , required BaseTodoModel model ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required VoidCallback onPressIcon ,
     required InitUpdateTodoState state
 
@@ -27,7 +28,7 @@ abstract class BaseMobileUpdateTodoWidgets {
   Consumer titleTextField({
     required TextEditingController titleController ,
     required BaseTodoModel model ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitUpdateTodoState state
   });
 
@@ -36,7 +37,7 @@ abstract class BaseMobileUpdateTodoWidgets {
   Consumer contentTextField({
     required TextEditingController contentController ,
     required BaseTodoModel model ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitUpdateTodoState state
   });
 }
@@ -46,23 +47,25 @@ class MobileUpdateTodoWidgets implements BaseMobileUpdateTodoWidgets {
   @override
   AppBar appBar({
     required int key , required BaseTodoModel model ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required VoidCallback onPressIcon ,
     required InitUpdateTodoState state
   }) {
-    //App.constance.appbarUpdateScreen
     return AppBar(
       key: ValueKey<int>(key),
-      title: state.app.text.text(text: model.date.substring(0,19) , fontSize: 20.0) ,
+      title: App.text.text(model.date.substring(0,19) , fontSize: 20.0) ,
       centerTitle: true ,
       //leading: const BackButton(),
-      leading: IconButton(onPressed: onPressIcon , icon: const Icon(CupertinoIcons.back)),
+      leading: IconButton(
+          onPressed: onPressIcon ,
+          icon: Icon(CupertinoIcons.back , color: App.color.generalWhite) ,
+      ),
       actions: [
         Consumer(
             builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0) ,
-                child: state.app.text.condition(
+                child: App.text.condition(
                     state: prov.watch(providerListenable).boolean ,
 
                     first: InkWell(
@@ -94,7 +97,7 @@ class MobileUpdateTodoWidgets implements BaseMobileUpdateTodoWidgets {
     required int key ,
     required InitUpdateTodoState state
   }) {
-    return state.app.globalWidgets.globalFloatingActionButton(
+    return App.globalWidgets.globalFloatingActionButton(
         key: ValueKey<int>(key) ,
         onPress: onPress ,
         child: const Icon(Icons.add)
@@ -106,19 +109,19 @@ class MobileUpdateTodoWidgets implements BaseMobileUpdateTodoWidgets {
   Consumer titleTextField({
     required TextEditingController titleController ,
     required BaseTodoModel model ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitUpdateTodoState state
   }) {
     return Consumer(
         builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-          return state.app.globalWidgets.globalTextField(
+          return App.globalWidgets.globalTextField(
               hintText: "Title" ,
               maxLine: 1 ,
               textInputAction: TextInputAction.next ,
               controller: titleController ,
               suffixIcon: IconButton(onPressed: (){
                 prov.read(providerListenable).switchBoolean();
-              }, icon: Icon(Icons.cached , color: state.app.color.darkMainColor,)),
+              }, icon: const Icon(Icons.cached)),
               textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl
           );
         }
@@ -130,12 +133,12 @@ class MobileUpdateTodoWidgets implements BaseMobileUpdateTodoWidgets {
   Consumer contentTextField({
     required TextEditingController contentController ,
     required BaseTodoModel model ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitUpdateTodoState state
   }) {
     return Consumer(
         builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-          return state.app.globalWidgets.globalTextField(
+          return App.globalWidgets.globalTextField(
               hintText: "Content" ,
               maxLine: 999999999 ,
               textInputAction: TextInputAction.unspecified ,

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 abstract class BaseTextWidgets {
 
-  Text text({
-    required String text ,
+  Text text(String text , {
     int? maxLine ,
     TextStyle? style ,
     TextOverflow? overflow ,
@@ -40,8 +39,7 @@ abstract class BaseTextWidgets {
 class TextWidget implements BaseTextWidgets {
 
   @override
-  Text text({
-    required String text ,
+  Text text(String text , {
     int? maxLine ,
     TextStyle? style ,
     TextOverflow? overflow ,

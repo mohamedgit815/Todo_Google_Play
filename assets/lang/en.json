@@ -1,4 +1,13 @@
 {
-  "createScreen": "Create Screen" ,
-  "homeScreen": "Home Screen"
+  "createScreen": "Create Data" ,
+  "homeScreen": "Home Screen" ,
+  "updateScreen": "Update Data" ,
+  "createTitle": "Title" ,
+  "createContent": "Content" ,
+  "lang": "Languages" ,
+  "light": "Light" ,
+  "dark": "Dark" ,
+  "en": "English" ,
+  "ar": "عربي" ,
+  "es": "Espaniol"
 }

@@ -9,9 +9,5 @@ class FetchDbController extends ChangeNotifier {
      notifyListeners();
      final List<Map<String, dynamic>> db = await DBHelperController().fetchAllTodo();
      return data.addAll(db);
-
-     //   return await DBHelperController().fetchAllTodo().then((value) {
-    //   return data.addAll(value);
-    // });
   }
 }

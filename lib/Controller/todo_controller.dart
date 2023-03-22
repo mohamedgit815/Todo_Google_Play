@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/App/Utils/route_builder.dart';
 import 'package:todo_app/App/app.dart';
-import 'package:todo_app/Controller/controller.dart';
+import 'package:todo_app/Controller/app_controller.dart';
 import 'package:todo_app/Model/todo_model.dart';
 
 abstract class BaseTodoController {
@@ -12,7 +12,6 @@ abstract class BaseTodoController {
     required String title , required String content ,
     required int checkTitleDirection ,
     required int checkContentDirection ,
-    required App app ,
     required Controller controller
   });
 
@@ -20,7 +19,6 @@ abstract class BaseTodoController {
   Future<void> deleteTodoController({
     required int id ,
     required BuildContext context ,
-    required App app ,
     required Controller controller
   });
 
@@ -32,7 +30,6 @@ abstract class BaseTodoController {
     required String content ,
     required int checkTitleDirection ,
     required int checkContentDirection ,
-    required App app ,
     required Controller controller
   });
 
@@ -47,7 +44,6 @@ class TodoController extends BaseTodoController {
     required String title , required String content ,
     required int checkTitleDirection ,
     required int checkContentDirection ,
-    required App app ,
     required Controller controller
   }) async {
     final TodoModel model = TodoModel(
@@ -56,8 +52,8 @@ class TodoController extends BaseTodoController {
     );
 
     if(title.isEmpty && content.isEmpty) {
-      app.alertWidgets.customSnackBar(
-          text: app.strings.createScreenError ,
+      App.alertWidgets.customSnackBar(
+          text: App.strings.createScreenError ,
           context: context);
       return;
     }
@@ -67,7 +63,7 @@ class TodoController extends BaseTodoController {
         App.navigator.pushNamedAndRemoveRouter(route: RouteGenerators.homeScreen, context: context);
       }
     } catch (e){
-      app.alertWidgets.customSnackBar(text: app.strings.createScreenError , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.createScreenError , context: context);
     }
   }
 
@@ -77,13 +73,12 @@ class TodoController extends BaseTodoController {
   Future<void> deleteTodoController({
     required int id ,
     required BuildContext context ,
-    required App app ,
     required Controller controller
   }) async {
     await  controller.dbHelper.deleteTodo(id).then((value) {
-      app.alertWidgets.customSnackBar(text: app.strings.homeScreenDeleted , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.homeScreenDeleted , context: context);
     }).catchError((err){
-      app.alertWidgets.customSnackBar(text: err.toString() , context: context);
+      App.alertWidgets.customSnackBar(text: err.toString() , context: context);
     });
   }
 
@@ -95,7 +90,6 @@ class TodoController extends BaseTodoController {
     required String title , required String content ,
     required int checkTitleDirection ,
     required int checkContentDirection ,
-    required App app ,
     required Controller controller
   }) async {
 
@@ -104,7 +98,7 @@ class TodoController extends BaseTodoController {
         checkTitleDirection:  checkTitleDirection , checkContentDirection: checkContentDirection
     );
     if(title.isEmpty && content.isEmpty) {
-      app.alertWidgets.customSnackBar(text: app.strings.updateError , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.updateError , context: context);
       return;
     }
     try {
@@ -113,7 +107,7 @@ class TodoController extends BaseTodoController {
         App.navigator.pushNamedAndRemoveRouter(route: RouteGenerators.homeScreen, context: context);
       }
     } catch (e){
-      app.alertWidgets.customSnackBar(text: app.strings.updateError , context: context);
+      App.alertWidgets.customSnackBar(text: App.strings.updateError , context: context);
     }
   }
 

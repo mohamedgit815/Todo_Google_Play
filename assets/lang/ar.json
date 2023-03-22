@@ -1,4 +1,13 @@
 {
-  "createScreen": "انشاء صفحه" ,
-  "homeScreen": "الصفحه الرئسيه"
+  "createScreen": "انشاء البيانات" ,
+  "homeScreen": "الصفحه الرئسيه" ,
+  "updateScreen": "تحديث البيانات" ,
+  "createTitle": "عنوان" ,
+  "createContent": "محتوى" ,
+  "lang": "اللغات" ,
+  "light": "خفيف" ,
+  "dark": "مظلم" ,
+  "en": "English" ,
+  "ar": "عربي" ,
+  "es": "Espaniol"
 }

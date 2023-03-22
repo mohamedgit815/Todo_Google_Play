@@ -1,4 +1,13 @@
 {
-  "createScreen": "Crear pantalla" ,
-  "homeScreen": "pantalla de inicio"
+  "createScreen": "Crear datos" ,
+  "homeScreen": "pantalla de inicio" ,
+  "updateScreen": "Actualizar datos" ,
+  "createTitle": "Título" ,
+  "createContent": "contenido" ,
+  "lang": "Idiomas" ,
+  "light": "Ligero" ,
+  "dark": "oscuro" ,
+  "en": "English" ,
+  "ar": "عربي" ,
+  "es": "Espaniol"
 }

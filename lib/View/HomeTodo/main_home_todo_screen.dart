@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/App/app.dart';
 //import 'package:todo_app/App/Utils/provider_state.dart';
 import 'package:todo_app/View/HomeTodo/init_home_todo.dart';
 import 'package:todo_app/View/HomeTodo/mobile_home_todo_page.dart';
@@ -18,13 +19,13 @@ class MainHomeTodoScreen extends ConsumerStatefulWidget {
 
 class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen> {
 
-  late final InitHomeTodoState state ;
+  late final InitHomeTodo state ;
 
   @override
   void initState() {
     super.initState();
 
-    state = InitHomeTodoState();
+    state = InitHomeTodo();
 
     //state.main.notificationProv = ChangeNotifierProvider<BooleanState>((ref) => BooleanState());
     state.main.dbHelperController = state.controller.dbHelper;
@@ -44,7 +45,7 @@ class _MainHomeTodoScreenState extends ConsumerState<MainHomeTodoScreen> {
                     providerListenable: state.main.notificationProv
                 );
               },
-              child: state.app.packageWidgets.responsiveBuilderScreen(
+              child: App.packageWidgets.responsiveBuilderScreen(
                 mobile: MobileHomeTodoPage(
                   state: state
                 ) ,

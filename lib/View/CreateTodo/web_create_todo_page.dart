@@ -9,7 +9,7 @@ class WebCreateTodoPage extends StatefulWidget {
   final InitCreateTodoState create;
   final TextEditingController titleController , contentController;
   final BaseDBHelperController dbHelperController;
-  final ProviderListenable<BooleanState> provTitleDirection , provContentDirection;
+  final ProviderListenable<BooleanProvider> provTitleDirection , provContentDirection;
 
   const WebCreateTodoPage({
     Key? key ,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/App/Utils/general.dart';
+import 'package:todo_app/App/app.dart';
 
 abstract class BaseAlertWidgets {
   ScaffoldMessengerState customSnackBar({
@@ -11,9 +12,15 @@ abstract class BaseAlertWidgets {
     final SnackBarAction? snackBarAction
   });
 
+  Future<void> alertDialog({
+    required BuildContext context ,
+    required Widget Function(BuildContext) builder
+  });
+
   Future<void> customAlertDialog({
     required VoidCallback onPressed ,
-    required BuildContext context
+    required BuildContext context ,
+    required App app
   });
 
   Future<void> customModalBottomSheet({
@@ -52,20 +59,29 @@ class AlertWidgets implements BaseAlertWidgets {
 
 
   @override
+  Future<void> alertDialog({
+    required BuildContext context ,
+    required Widget Function(BuildContext) builder
+  }) {
+    return showDialog(context: context, builder: builder);
+  }
+
+  @override
   Future<void> customAlertDialog({
     required VoidCallback onPressed ,
-    required BuildContext context
+    required BuildContext context ,
+    required App app
   }) {
     return showDialog(context: context, builder: (buildContext)=>AlertDialog(
       title: const CustomText(text: 'Sure'),
       //title: CustomText(text: '${context.translate!.translate(MainEnum.textSure.name)}'),
       actions: [
-        CustomElevatedButton(
+        App.buttons.elevated(
             onPressed: (){
               Navigator.pop(context);
             }, child: const Text('No')),
         //child: Text('${context.translate!.translate(MainEnum.textNo.name)}')),
-        CustomElevatedButton(
+        App.buttons.elevated(
             onPressed: onPressed, child: const Text('Yes')),
       ],
     ));

@@ -19,7 +19,7 @@ abstract class BaseGlobalHelper {
   bool notificationListener({
     required UserScrollNotification notification ,
     required WidgetRef ref ,
-    required ProviderListenable<BooleanState> providerListenable
+    required ProviderListenable<BooleanProvider> providerListenable
   });
 
 
@@ -46,7 +46,7 @@ class GlobalHelper extends BaseGlobalHelper {
   bool notificationListener({
     required UserScrollNotification notification ,
     required WidgetRef ref ,
-    required ProviderListenable<BooleanState> providerListenable
+    required ProviderListenable<BooleanProvider> providerListenable
   }) {
     if(notification.direction == ScrollDirection.forward) {
       ref.read(providerListenable).trueBoolean();

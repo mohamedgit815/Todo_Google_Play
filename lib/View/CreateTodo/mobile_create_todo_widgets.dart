@@ -2,22 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todo_app/App/Utils/general.dart';
 import 'package:todo_app/App/Utils/provider_state.dart';
+import 'package:todo_app/App/app.dart';
 import 'package:todo_app/View/CreateTodo/init_create.dart';
 
 
 abstract class BaseMobileCrateTodoWidgets {
   /// Appbar
-  AppBar appBar({required ProviderListenable<BooleanState> providerListenable , required BuildContext context});
+  AppBar appBar({
+    required ProviderListenable<BooleanProvider> providerListenable ,
+    required BuildContext context ,
+    required InitCreateTodoState state
+  });
 
 
   /// Floating Action Button
-  Widget floatingActionButton({required VoidCallback onPress , required InitCreateTodoState state});
+  Widget floatingActionButton({
+    required VoidCallback onPress ,
+    required InitCreateTodoState state
+  });
 
 
   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
   Consumer titleTextField({
     required TextEditingController titleController ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitCreateTodoState state
   });
 
@@ -25,7 +33,7 @@ abstract class BaseMobileCrateTodoWidgets {
   /// GlobalWidget: Path is {Core/GlobalWidget/global_text_field.dart}
   Consumer contentTextField({
     required TextEditingController contentController ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitCreateTodoState state
   });
 }
@@ -34,7 +42,11 @@ abstract class BaseMobileCrateTodoWidgets {
 class MobileCrateTodoWidgets implements BaseMobileCrateTodoWidgets {
 
   @override
-  AppBar appBar({required ProviderListenable<BooleanState> providerListenable , required BuildContext context}) {
+  AppBar appBar({
+    required ProviderListenable<BooleanProvider> providerListenable ,
+    required BuildContext context ,
+    required InitCreateTodoState state
+  }) {
     return AppBar(
       title: CustomText(
           text: "${context.lang!.translate(LangEnum.createScreen.name)}",
@@ -42,6 +54,10 @@ class MobileCrateTodoWidgets implements BaseMobileCrateTodoWidgets {
           fontSize: 20.0) ,
       //title: CustomText(text: App.strings.appbarCreateScreen , fontSize: 20.0) ,
       centerTitle: true ,
+      leading: IconButton(onPressed: ()  async {
+         await state.main.backButton(context);
+      }, icon: Icon(Icons.arrow_back,color: App.color.generalWhite,)),
+
       actions: [
         Consumer(
             builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
@@ -70,7 +86,7 @@ class MobileCrateTodoWidgets implements BaseMobileCrateTodoWidgets {
 
   @override
   Widget floatingActionButton({required VoidCallback onPress , required InitCreateTodoState state}) {
-    return state.app.globalWidgets.globalFloatingActionButton(
+    return App.globalWidgets.globalFloatingActionButton(
         onPress: onPress ,
         child: const Icon(Icons.add)
     );
@@ -80,17 +96,17 @@ class MobileCrateTodoWidgets implements BaseMobileCrateTodoWidgets {
   @override
   Consumer titleTextField({
     required TextEditingController titleController ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitCreateTodoState state
   }) {
     return Consumer(
         builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-          return state.app.globalWidgets.globalTextField(
+          return App.globalWidgets.globalTextField(
               hintText: "Title" ,
               maxLine: 1 ,
               suffixIcon: IconButton(onPressed: (){
                 prov.read(providerListenable).switchBoolean();
-              }, icon: Icon(Icons.cached , color: state.app.color.darkMainColor,)),
+              }, icon: const Icon(Icons.cached )),
               textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,
               textInputAction: TextInputAction.next ,
               controller: titleController
@@ -103,12 +119,12 @@ class MobileCrateTodoWidgets implements BaseMobileCrateTodoWidgets {
   @override
   Consumer contentTextField({
     required TextEditingController contentController ,
-    required ProviderListenable<BooleanState> providerListenable ,
+    required ProviderListenable<BooleanProvider> providerListenable ,
     required InitCreateTodoState state
   }) {
     return Consumer(
         builder: (BuildContext buildContext , WidgetRef prov ,Widget? _) {
-          return state.app.globalWidgets.globalTextField(
+          return App.globalWidgets.globalTextField(
               hintText: "Content" ,
               maxLine: 999999999 ,
               textDirection: prov.watch(providerListenable).boolean ? TextDirection.ltr : TextDirection.rtl ,
