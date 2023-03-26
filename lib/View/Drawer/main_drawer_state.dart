@@ -13,7 +13,7 @@ abstract class BaseDrawerState {
     required InitDrawer state
   });
 
-  PreferencesBooleanProvider switchThemeProvider({required WidgetRef ref});
+   switchThemeProvider({required WidgetRef ref});
 }
 
 class DrawerState implements BaseDrawerState {
@@ -53,7 +53,7 @@ class DrawerState implements BaseDrawerState {
   }
 
   @override
-  PreferencesBooleanProvider switchThemeProvider({required WidgetRef ref}) {
+   switchThemeProvider({required WidgetRef ref}) {
     return ref.read(App.theme.themeProvider).toggleTheme();
   }
 

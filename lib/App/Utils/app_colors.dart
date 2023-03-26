@@ -7,7 +7,7 @@ class AppColor {
   final Color baseColor = Colors.grey.shade300;
 
 /// Dark Theme
-  final Color darkMainColor = Colors.deepOrange;
+  final Color darkMainColor = Colors.indigoAccent;
   final Color darkColorOne = const Color(0xff424242);
   final Color darkColorTow = const Color(0xff303030);
   final Color darkColorFour = const Color(0xff1a1a1a);
